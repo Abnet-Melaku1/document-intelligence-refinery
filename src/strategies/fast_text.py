@@ -24,6 +24,7 @@ import yaml
 from src.models.document_profile import DocumentProfile
 from src.models.extracted_document import (
     BoundingBox,
+    EscalationReason,
     ExtractedDocument,
     ExtractionStrategy,
     FigureBlock,
@@ -304,5 +305,14 @@ class FastTextExtractor(BaseExtractor):
 
         # Signal escalation if confidence is too low
         escalate = overall_confidence < self.confidence_threshold
+        detail = (
+            f"confidence {overall_confidence:.4f} < threshold {self.confidence_threshold}"
+            if escalate else None
+        )
 
-        return ExtractionResult(document=doc, escalate=escalate)
+        return ExtractionResult(
+            document=doc,
+            escalate=escalate,
+            escalation_reason=EscalationReason.LOW_CONFIDENCE if escalate else None,
+            escalation_detail=detail,
+        )

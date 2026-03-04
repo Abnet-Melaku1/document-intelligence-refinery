@@ -2,6 +2,10 @@
 
 All three extraction strategies (FastText, Layout, Vision) must produce this schema.
 This is the internal contract between the extraction layer and the chunking engine.
+
+Routing metadata (RoutingDecision, StrategyAttempt) is embedded directly in the
+ExtractedDocument so that every downstream stage — chunker, indexer, query agent —
+can inspect exactly how the document was routed and whether it needs human review.
 """
 
 from __future__ import annotations
@@ -100,10 +104,68 @@ class ExtractionStrategy(str, Enum):
     VISION = "vision"             # Strategy C: VLM
 
 
+# ---------------------------------------------------------------------------
+# Routing metadata — embedded in every ExtractedDocument
+# ---------------------------------------------------------------------------
+
+class EscalationReason(str, Enum):
+    """Why a strategy attempt did not produce an acceptable result."""
+    LOW_CONFIDENCE = "low_confidence"       # Confidence below threshold
+    EXCEPTION_RAISED = "exception_raised"   # Strategy raised an unhandled exception
+    BUDGET_EXHAUSTED = "budget_exhausted"   # Vision budget cap reached mid-document
+
+
+class StrategyAttempt(BaseModel):
+    """Record of one strategy's execution — whether it succeeded or triggered escalation.
+
+    All attempts are preserved in order so reviewers can see the full escalation trail.
+    """
+    strategy: ExtractionStrategy
+    confidence_score: float = Field(ge=0.0, le=1.0)
+    escalated: bool = Field(
+        description="True if this attempt's confidence was below threshold and the router moved on"
+    )
+    escalation_reason: Optional[EscalationReason] = Field(
+        default=None,
+        description="Why escalation was triggered. None when escalated=False."
+    )
+    escalation_detail: Optional[str] = Field(
+        default=None,
+        description="Human-readable detail: threshold value, exception message, etc."
+    )
+    cost_usd: float = 0.0
+    processing_time_seconds: Optional[float] = None
+
+
+class RoutingDecision(BaseModel):
+    """The router's initial strategy selection and its justification.
+
+    Captures the DocumentProfile signals that drove the routing choice so that
+    the decision is reproducible and auditable without re-running triage.
+    """
+    initial_strategy: ExtractionStrategy
+    selection_reason: str = Field(
+        description="Human-readable explanation of why this strategy was the starting point"
+    )
+    # Key DocumentProfile signals that determined the starting strategy
+    origin_type: str
+    layout_complexity: str
+    estimated_extraction_cost: str
+    avg_char_density: float
+    avg_image_area_ratio: float
+    scanned_page_count: int
+    # The full ordered chain the router will attempt (first = cheapest that should work)
+    strategy_chain: list[ExtractionStrategy]
+
+
 class ExtractedDocument(BaseModel):
     """Normalized extraction output — the common schema all strategies produce.
 
     Adapters for Docling, MinerU, and VLM output must all produce this model.
+
+    Routing metadata fields (routing_decision, strategy_attempts, requires_human_review)
+    are populated by ExtractionRouter after extraction completes. Individual strategy
+    implementations leave them at defaults.
     """
 
     doc_id: str
@@ -122,6 +184,26 @@ class ExtractedDocument(BaseModel):
     processing_time_seconds: Optional[float] = None
     extraction_version: str = "1.0.0"
 
+    # Routing provenance — populated by ExtractionRouter, not by individual strategies
+    routing_decision: Optional[RoutingDecision] = Field(
+        default=None,
+        description="Why the initial strategy was selected and the full strategy chain"
+    )
+    strategy_attempts: list[StrategyAttempt] = Field(
+        default_factory=list,
+        description="Every strategy attempted in order, with individual confidence scores"
+    )
+
+    # Human review flag — set when final tier confidence is still below human_review_threshold
+    requires_human_review: bool = Field(
+        default=False,
+        description="True when even the terminal strategy did not achieve acceptable confidence"
+    )
+    human_review_reason: Optional[str] = Field(
+        default=None,
+        description="Explanation of why human review is needed (shown in CLI and ledger)"
+    )
+
     # Warnings produced during extraction
     warnings: list[str] = Field(default_factory=list)
 
@@ -138,3 +220,8 @@ class ExtractedDocument(BaseModel):
     @property
     def figure_count(self) -> int:
         return len(self.figures)
+
+    @property
+    def escalation_count(self) -> int:
+        """Number of strategies that escalated (= total attempts - 1 if final succeeded)."""
+        return sum(1 for a in self.strategy_attempts if a.escalated)

@@ -35,6 +35,7 @@ import yaml
 from src.models.document_profile import DocumentProfile, DomainHint
 from src.models.extracted_document import (
     BoundingBox,
+    EscalationReason,
     ExtractedDocument,
     ExtractionStrategy,
     FigureBlock,
@@ -239,13 +240,17 @@ class VisionExtractor(BaseExtractor):
         all_figures: list[FigureBlock] = []
         warnings: list[str] = []
         total_cost = 0.0
+        budget_exhausted = False
+        budget_exhausted_at_page: Optional[int] = None
         prompt = _build_extraction_prompt(profile.domain_hint, self.prompts_config)
 
         for page_num in range(1, profile.page_count + 1):
             # Budget guard — check before each page
             if total_cost >= self.budget_cap:
+                budget_exhausted = True
+                budget_exhausted_at_page = page_num - 1
                 warnings.append(
-                    f"Budget cap ${self.budget_cap:.3f} reached at page {page_num - 1}. "
+                    f"Budget cap ${self.budget_cap:.3f} reached at page {budget_exhausted_at_page}. "
                     f"Remaining pages ({page_num}–{profile.page_count}) not extracted."
                 )
                 break
@@ -309,5 +314,15 @@ class VisionExtractor(BaseExtractor):
             warnings=warnings,
         )
 
-        # Strategy C never escalates — it's the final tier
-        return ExtractionResult(document=doc, escalate=False)
+        # Strategy C never escalates to a higher tier — it's the terminal strategy.
+        # However, when the budget was exhausted mid-document the escalation_reason
+        # is BUDGET_EXHAUSTED so the router can record it clearly in the ledger.
+        return ExtractionResult(
+            document=doc,
+            escalate=False,
+            escalation_reason=EscalationReason.BUDGET_EXHAUSTED if budget_exhausted else None,
+            escalation_detail=(
+                f"budget ${self.budget_cap:.3f} exhausted at page {budget_exhausted_at_page}"
+                if budget_exhausted else None
+            ),
+        )

@@ -24,6 +24,7 @@ from typing import Optional
 from src.models.document_profile import DocumentProfile
 from src.models.extracted_document import (
     BoundingBox,
+    EscalationReason,
     ExtractedDocument,
     ExtractionStrategy,
     FigureBlock,
@@ -290,5 +291,14 @@ class LayoutExtractor(BaseExtractor):
         )
 
         escalate = confidence < self.confidence_threshold
+        detail = (
+            f"confidence {confidence:.4f} < threshold {self.confidence_threshold}"
+            if escalate else None
+        )
 
-        return ExtractionResult(document=doc, escalate=escalate)
+        return ExtractionResult(
+            document=doc,
+            escalate=escalate,
+            escalation_reason=EscalationReason.LOW_CONFIDENCE if escalate else None,
+            escalation_detail=detail,
+        )

@@ -40,6 +40,12 @@ extraction:
   # Strategy B → C escalation
   confidence_threshold_bc: 0.60    # Layout confidence < 0.60 → escalate to Vision
 
+  # Human review floor — applies AFTER the full A→B→C chain is exhausted.
+  # If the final strategy's confidence is still below this value, the document
+  # is flagged requires_human_review=True in ExtractedDocument and the ledger.
+  # Set to 0.0 to disable entirely. Raise to 0.75 for strict audit pipelines.
+  human_review_threshold: 0.50
+
   # Confidence signal weights for Strategy A (FastTextExtractor)
   confidence_weights:
     char_density: 0.40             # Most important signal
