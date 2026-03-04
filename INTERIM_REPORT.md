@@ -220,6 +220,8 @@ flowchart TD
 | `char_density < 0.001` | pdfplumber chars per pt² | Hard cutoff | `extraction_rules.yaml: triage.char_density_scanned` |
 | `≥ 80% pages scanned` | Fraction of scanned pages | 0.80 | `triage.scanned_page_ratio_hard` |
 | `40–79% pages scanned` | Fraction of scanned pages | 0.40 | `triage.scanned_page_ratio` |
+| `≥ 60% zero-text pages` | Pages with char_count==0 and low image area | 0.60 | `triage.zero_text_page_ratio` |
+| `AcroForm fields present` | PDF catalog AcroForm field count | 1 field | `triage.form_fillable_min_fields` |
 | `Column count ≥ 2` | x-coordinate gap analysis | 2 columns | `triage.multi_column_count` |
 | `Table pages ≥ 30%` | pdfplumber table detection | 0.30 | `triage.table_page_ratio` |
 | `Confidence ≥ 0.75` | FastText confidence score | 0.75 | `extraction.confidence_threshold_ab` |
@@ -475,19 +477,36 @@ graph LR
 
 #### Origin Type Detection Logic
 
+Five origin types are now supported. Classification runs in priority order and each branch emits a `(OriginType, confidence: float)` tuple — the confidence feeds directly into `DocumentProfile` and is consumed by `ExtractionRouter` to decide initial strategy and escalation aggressiveness.
+
 ```python
 # Pseudocode — actual implementation in src/agents/triage.py
+
+# Zero-text: blank/decorative pages (no chars AND low image area — not scanned images)
+zero_text_count = count(pages where char_count == 0 and image_area_ratio < 0.80)
+zero_text_ratio  = zero_text_count / total_page_count
+
+# Form-fillable: checked via pdfminer AcroForm catalog (separate from page stats)
+is_form_fillable, field_count = inspect_acroform(pdf.doc.catalog)
 
 scanned_count = count(pages where is_likely_scanned == True)
 scanned_ratio = scanned_count / total_page_count
 
-if scanned_ratio >= 0.80:
-    origin_type = SCANNED_IMAGE      # Fully scanned
+if zero_text_ratio >= 0.60:          # ≥60% truly blank pages
+    origin_type = ZERO_TEXT          # Even Vision may yield little; flag for review
+elif scanned_ratio >= 0.80:
+    origin_type = SCANNED_IMAGE      # Fully scanned → needs OCR/Vision
 elif scanned_ratio >= 0.40:
-    origin_type = MIXED              # Partially scanned
+    origin_type = MIXED              # Partially scanned → Layout + Vision
 else:
-    origin_type = NATIVE_DIGITAL     # Digital throughout
+    origin_type = NATIVE_DIGITAL     # Digital throughout → start with FastText
+
+# Form-fillable overlay (after page-level classification)
+if is_form_fillable and origin_type == NATIVE_DIGITAL:
+    origin_type = FORM_FILLABLE      # AcroForm fields require structured field extraction
 ```
+
+Confidence is computed as the margin from the nearest decision boundary: a document whose scanned ratio is well above 0.80 gets confidence ≈ 0.95; a document exactly at the threshold gets confidence ≈ 0.60.
 
 #### Layout Complexity Detection Logic
 
@@ -511,17 +530,32 @@ else:                           → SINGLE_COLUMN
 
 #### Domain Hint Classification
 
-A keyword-frequency scoring approach over the first 5,000 characters of extractable text. Each domain has a curated keyword list; the domain with the highest keyword hit count wins:
+Domain detection uses a **fully pluggable strategy pattern**. Three classes form the classifier:
 
-| Domain | Sample Keywords |
-|--------|----------------|
-| `financial` | revenue, balance sheet, income statement, profit, fiscal, birr, audit, dividends, equity, expenditure |
-| `legal` | whereas, hereinafter, pursuant, jurisdiction, clause, regulation, compliance, contract |
-| `technical` | algorithm, architecture, implementation, methodology, assessment, framework, specification |
-| `medical` | patient, clinical, diagnosis, treatment, dosage, hospital, epidemiology |
-| `general` | (fallback when no domain scores above zero) |
+| Class | Role |
+|-------|------|
+| `DomainStrategy` (ABC) | Abstract base — `domain` property + `score(text) -> float` |
+| `KeywordDomainStrategy` | Scores a domain by weighted keyword frequency |
+| `DomainClassifier` | Orchestrates strategies; returns `(DomainHint, confidence)` |
 
-This is intentionally designed as a **pluggable strategy** — the `_detect_domain_hint` function can be replaced with a VLM-based classifier for higher accuracy without changing the rest of the pipeline.
+`DomainClassifier.classify(text)` scores every registered strategy against the first 5,000 characters of extractable text, then returns the winner and a **confidence** value — the fraction of total keyword hits belonging to the best domain (exclusivity ratio). A score of 0.0 means no domain keywords were found and the result defaults to `GENERAL`.
+
+**Config-driven onboarding**: keyword lists and per-domain weights live entirely in `rubric/extraction_rules.yaml` under the `domains:` block. Adding a new domain requires only a YAML edit — no code changes:
+
+```yaml
+# rubric/extraction_rules.yaml — domains section (abbreviated)
+domains:
+  financial:
+    weight: 1.0
+    keywords: [revenue, balance sheet, income statement, profit, birr, ...]
+  medical:
+    weight: 1.2     # boosted — medical terms are rare but highly distinctive
+    keywords: [patient, clinical, diagnosis, treatment, dosage, ...]
+  # + legal, technical defined similarly
+  # GENERAL is the fallback — no keywords needed
+```
+
+`TriageAgent` calls `_build_domain_classifier(config)` at construction time, which reads the YAML and creates one `KeywordDomainStrategy` per domain. To swap in a VLM-based or regex-based classifier for a single domain, subclass `DomainStrategy` and register it — the rest of the pipeline is unchanged.
 
 ---
 
@@ -842,7 +876,24 @@ sequenceDiagram
 After the full strategy chain is exhausted, `_evaluate_human_review()` checks the final confidence against `human_review_threshold` (default: `0.50` from `extraction_rules.yaml`):
 
 ```yaml
-# rubric/extraction_rules.yaml
+# rubric/extraction_rules.yaml (key sections — full file is the canonical reference)
+
+triage:
+  scanned_page_ratio: 0.40          # ≥40% scanned → MIXED origin
+  scanned_page_ratio_hard: 0.80     # ≥80% scanned → SCANNED_IMAGE origin
+  zero_text_page_ratio: 0.60        # ≥60% blank pages (no text, low image area) → ZERO_TEXT
+  form_fillable_min_fields: 1       # ≥1 AcroForm field → FORM_FILLABLE origin
+  table_page_ratio: 0.30            # ≥30% table pages → TABLE_HEAVY layout
+
+domains:                             # Config-driven domain keywords — no code change to add a domain
+  financial:
+    weight: 1.0
+    keywords: [revenue, balance sheet, profit, birr, fiscal, audit, ...]
+  medical:
+    weight: 1.2                      # Boosted — medical terms are rare but distinctive
+    keywords: [patient, clinical, diagnosis, treatment, ...]
+  # + legal, technical defined similarly; GENERAL is the fallback
+
 extraction:
   confidence_threshold_ab: 0.75   # A→B escalation trigger
   confidence_threshold_bc: 0.60   # B→C escalation trigger
@@ -932,10 +983,16 @@ PDF File
   ▼
 DocumentProfile                     (src/models/document_profile.py)
   ├── doc_id: str                   SHA256[:16] of file content
-  ├── origin_type: OriginType       Enum: native_digital | scanned_image | mixed
-  ├── layout_complexity: Enum       single_column | multi_column | table_heavy | ...
+  ├── origin_type: OriginType       native_digital | scanned_image | mixed | form_fillable | zero_text
+  ├── layout_complexity: Enum       single_column | multi_column | table_heavy | figure_heavy | mixed
   ├── domain_hint: DomainHint       financial | legal | technical | medical | general
   ├── estimated_extraction_cost     fast_text_sufficient | needs_layout_model | needs_vision_model
+  ├── origin_confidence: float      0.0–1.0; margin from nearest classification boundary
+  ├── layout_confidence: float      0.0–1.0; strength of dominant layout signal
+  ├── domain_confidence: float      0.0–1.0; exclusivity ratio of best-domain keyword hits
+  ├── is_form_fillable: bool        True when AcroForm fields detected in PDF catalog
+  ├── form_field_count: int         Number of interactive AcroForm fields (0 if not form)
+  ├── zero_text_page_count: int     Pages with char_count==0 and low image area
   └── page_stats: List[PageStats]   Per-page char_density, image_area_ratio, has_tables
   │
   ▼
@@ -1212,9 +1269,13 @@ This is the client-facing case for Vision spend. Even at the highest per-documen
 | `LDU` schema | ✅ Complete | `src/models/ldu.py` |
 | `PageIndex` schema | ✅ Complete | `src/models/page_index.py` |
 | `ProvenanceChain` schema | ✅ Complete | `src/models/provenance.py` |
-| `TriageAgent` — origin_type detection | ✅ Complete | `src/agents/triage.py` |
+| `TriageAgent` — origin_type detection (5 types incl. ZERO_TEXT, FORM_FILLABLE) | ✅ Complete | `src/agents/triage.py` |
 | `TriageAgent` — layout_complexity detection | ✅ Complete | `src/agents/triage.py` |
-| `TriageAgent` — domain_hint classifier | ✅ Complete | `src/agents/triage.py` |
+| `DomainStrategy` ABC + `KeywordDomainStrategy` + `DomainClassifier` | ✅ Complete | `src/agents/triage.py` |
+| Classification confidence scores (`origin_confidence`, `layout_confidence`, `domain_confidence`) | ✅ Complete | `src/models/document_profile.py` |
+| Form-fillable detection via AcroForm catalog inspection | ✅ Complete | `src/agents/triage.py` |
+| `ZERO_TEXT` origin type + `zero_text_page_count` field | ✅ Complete | `src/models/document_profile.py` |
+| Domain keywords fully externalized to `extraction_rules.yaml` (`domains:` block) | ✅ Complete | `rubric/extraction_rules.yaml` |
 | `FastTextExtractor` with confidence scoring | ✅ Complete | `src/strategies/fast_text.py` |
 | `LayoutExtractor` (Docling adapter) | ✅ Complete | `src/strategies/layout.py` |
 | `VisionExtractor` with budget guard | ✅ Complete | `src/strategies/vision.py` |
