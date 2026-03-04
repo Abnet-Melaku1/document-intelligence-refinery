@@ -7,7 +7,7 @@
 **Submitted by:** Forward Deployed Engineer Candidate
 **Submission Date:** March 5, 2026
 **Deadline:** Thursday, March 5, 2026 — 03:00 UTC
-**Repository:** `document-intelligence-refinery`
+**Repository:** `https://github.com/Abnet-Melaku1/document-intelligence-refinery`
 
 ---
 
