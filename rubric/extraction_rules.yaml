@@ -1,64 +1,190 @@
 # extraction_rules.yaml
-# The single source of truth for all extraction thresholds and chunking rules.
-# Change behavior by editing this file — no code changes required.
-# Documented in DOMAIN_NOTES.md with empirical justification.
+# The single source of truth for all extraction thresholds, domain keywords,
+# chunking rules, and strategy configuration.
+# Onboard a new domain by adding an entry under `domains:` — no code changes required.
+# Each parameter is documented inline with its purpose and valid range.
 
 # =============================================================================
 # TRIAGE THRESHOLDS
-# Used by src/agents/triage.py to classify documents
+# Used by src/agents/triage.py to classify documents.
+# Adjusting these values changes classifier sensitivity without touching code.
 # =============================================================================
 triage:
-  # Character density (chars per pt²) — distinguishes digital from scanned
+  # --- Character density (characters per pt²) ---
+  # Distinguishes embedded-text pages from scanned/image-only pages.
   char_density_min: 0.05           # Below this → page has poor text content
   char_density_scanned: 0.001      # Hard cutoff: page is essentially scanned
 
-  # Image area as fraction of total page area
+  # --- Image area as fraction of total page area ---
   image_area_scanned: 0.80         # >80% image → page is scanned
   image_area_max: 0.50             # >50% image → layout concern, escalate to B
 
-  # Document-level scanned page ratios
+  # --- Document-level scanned page ratios ---
   scanned_page_ratio: 0.40         # ≥40% scanned pages → MIXED origin
   scanned_page_ratio_hard: 0.80    # ≥80% scanned pages → SCANNED_IMAGE origin
 
-  # Table and figure detection thresholds
+  # --- Zero-text detection ---
+  # Pages where char_count == 0 (no characters extracted at all).
+  # These may be blank, decorative, or purely graphical slides.
+  # Even Vision models may struggle with truly blank pages.
+  zero_text_page_ratio: 0.60       # ≥60% zero-text pages → ZERO_TEXT origin
+
+  # --- Form-fillable detection ---
+  # AcroForm field count threshold. PDFs with interactive fields need
+  # special handling (field extraction, not text extraction).
+  form_fillable_min_fields: 1      # ≥1 AcroForm field → classified FORM_FILLABLE
+
+  # --- Table and figure detection thresholds ---
   table_page_ratio: 0.30           # ≥30% pages with tables → TABLE_HEAVY
   figure_page_ratio: 0.30          # ≥30% pages with figures → FIGURE_HEAVY
 
-  # Column detection
+  # --- Column detection ---
   multi_column_gap_min: 50.0       # pt — minimum x-gap to consider a column break
   multi_column_count: 2            # Estimated columns ≥ this → MULTI_COLUMN
 
 
 # =============================================================================
+# DOMAIN CLASSIFICATION
+# Used by DomainClassifier in src/agents/triage.py.
+# To onboard a new domain: add a new entry here with keywords and weight.
+# No code changes required — triage reads this section on startup.
+#
+# Schema per domain:
+#   weight   (float, default 1.0): multiplier applied to raw keyword hit count.
+#            Raise weight for domains with distinctive but rare vocabulary.
+#   keywords (list[str]):          lowercase phrases scored by occurrence count
+#            in sampled text. Multi-word phrases are matched as substrings.
+# =============================================================================
+domains:
+  financial:
+    weight: 1.0
+    keywords:
+      - revenue
+      - balance sheet
+      - income statement
+      - profit
+      - loss
+      - assets
+      - liabilities
+      - equity
+      - fiscal
+      - budget
+      - expenditure
+      - audit
+      - financial statements
+      - birr
+      - usd
+      - eur
+      - cash flow
+      - earnings
+      - dividends
+      - tax
+      - quarter
+      - annual report
+
+  legal:
+    weight: 1.0
+    keywords:
+      - whereas
+      - hereinafter
+      - pursuant
+      - jurisdiction
+      - plaintiff
+      - defendant
+      - clause
+      - article
+      - regulation
+      - act
+      - law
+      - court
+      - tribunal
+      - legal
+      - contract
+      - agreement
+      - compliance
+
+  technical:
+    weight: 1.0
+    keywords:
+      - algorithm
+      - architecture
+      - implementation
+      - system
+      - software
+      - hardware
+      - protocol
+      - specification
+      - api
+      - database
+      - network
+      - assessment
+      - technical
+      - methodology
+      - framework
+      - performance
+      - pharmaceutical
+      - manufacturing
+      - chemical
+      - process
+      - standard
+
+  medical:
+    weight: 1.2                    # Medical terms are distinctive; boost weight
+    keywords:
+      - patient
+      - clinical
+      - diagnosis
+      - treatment
+      - dosage
+      - medical
+      - hospital
+      - health
+      - disease
+      - therapy
+      - epidemiology
+      - mortality
+      - morbidity
+      - prescription
+      - symptom
+
+
+# =============================================================================
 # EXTRACTION CONFIDENCE THRESHOLDS
-# Used by ExtractionRouter to gate escalation between strategies
+# Used by ExtractionRouter to gate escalation between strategies.
 # =============================================================================
 extraction:
-  # Strategy A → B escalation
+  # --- Strategy A → B escalation ---
   confidence_threshold_ab: 0.75    # FastText confidence < 0.75 → escalate to Layout
 
-  # Strategy B → C escalation
+  # --- Strategy B → C escalation ---
   confidence_threshold_bc: 0.60    # Layout confidence < 0.60 → escalate to Vision
 
-  # Human review floor — applies AFTER the full A→B→C chain is exhausted.
+  # --- Human review floor ---
+  # Applies AFTER the full A→B→C chain is exhausted.
   # If the final strategy's confidence is still below this value, the document
   # is flagged requires_human_review=True in ExtractedDocument and the ledger.
   # Set to 0.0 to disable entirely. Raise to 0.75 for strict audit pipelines.
   human_review_threshold: 0.50
 
-  # Confidence signal weights for Strategy A (FastTextExtractor)
+  # --- Confidence signal weights for Strategy A (FastTextExtractor) ---
   confidence_weights:
     char_density: 0.40             # Most important signal
     image_area_penalty: 0.30       # High image area penalizes confidence
     font_metadata: 0.20            # Embedded fonts = digital PDF
     whitespace_ratio: 0.10         # Reasonable whitespace = structured text
 
-  # FastText Strategy A specific gates
+  # --- FastText Strategy A specific gates ---
   fast_text:
     min_char_count_per_page: 100   # Pages below this are likely scanned or blank
     max_image_area_ratio: 0.50     # Pages above this need layout analysis
 
-  # Vision Strategy C budget guard
+  # --- Layout Strategy B specific gates ---
+  layout:
+    min_coverage_ratio: 0.70       # Fraction of page area with detected text blocks
+    table_confidence_min: 0.65     # Minimum pdfplumber table-detection confidence
+    max_image_area_ratio: 0.75     # Pages above this need Vision
+
+  # --- Vision Strategy C budget guard ---
   vision:
     budget_cap_usd: 0.10           # Maximum spend per document
     model_primary: "google/gemini-flash-1.5"     # Cheap, fast, capable
@@ -69,32 +195,43 @@ extraction:
 
 # =============================================================================
 # CHUNKING CONSTITUTION
-# The 5 rules enforced by ChunkingEngine and verified by ChunkValidator
-# Violations cause ChunkValidator to raise ChunkingRuleViolation
+# The 5 rules enforced by ChunkingEngine and verified by ChunkValidator.
+# Violations cause ChunkValidator to raise ChunkingRuleViolation.
 # =============================================================================
 chunking:
-  # Maximum token count for a single LDU before splitting is forced
+  # Maximum token count for a single LDU before splitting is forced.
+  # Balances retrieval granularity (small chunks) vs. context coherence (large chunks).
   max_tokens_per_chunk: 512
-  min_tokens_per_chunk: 50
+  min_tokens_per_chunk: 50         # Chunks below this are merged with neighbors
 
-  # Rule R1: Table cells never split from header row
+  # Rule R1: Table cells never split from header row.
+  # Ensures LDU contains the column header needed to interpret cell values.
   rule_r1_table_header_protection: true
 
-  # Rule R2: Figure caption always stored as parent figure metadata
+  # Rule R2: Figure caption always stored as parent figure metadata.
+  # Prevents captions from being indexed as standalone text chunks.
   rule_r2_caption_as_metadata: true
 
-  # Rule R3: Numbered lists kept as single LDU unless they exceed max_tokens
+  # Rule R3: Numbered lists kept as single LDU unless they exceed max_tokens.
+  # Preserves list semantics — a list is one semantic unit.
   rule_r3_list_unity: true
   rule_r3_list_max_tokens: 512
 
-  # Rule R4: Section headers stored as parent_section on all child chunks
+  # Rule R4: Section headers stored as parent_section on all child chunks.
+  # Allows retrieval systems to filter by section title.
   rule_r4_section_context: true
 
-  # Rule R5: Cross-references resolved and stored as chunk relationships
+  # Rule R5: Cross-references resolved and stored as chunk relationships.
+  # Enables graph-style retrieval across related sections.
   rule_r5_cross_reference_resolution: true
 
-  # Caption proximity: how close (in pt) a caption must be to its figure
+  # Caption proximity: how close (in pt) a caption must be to its figure.
+  # Captions farther than this are treated as standalone paragraphs.
   caption_proximity_threshold: 50.0
+
+  # Overlap between adjacent text chunks (in tokens).
+  # Non-zero overlap helps retrieval systems find context near chunk boundaries.
+  chunk_overlap_tokens: 20
 
 
 # =============================================================================
@@ -115,7 +252,8 @@ pageindex:
 
 # =============================================================================
 # DOMAIN-SPECIFIC EXTRACTION PROMPTS
-# Used by VisionExtractor to guide VLM extraction per domain
+# Used by VisionExtractor to guide VLM extraction per domain.
+# The prompt_template key in extraction.vision selects which prompt to use.
 # =============================================================================
 prompts:
   financial: >
@@ -140,6 +278,14 @@ prompts:
     - Tables with assessment findings
     - Recommendations and action items
     - Acronyms and their definitions
+    Output as structured JSON matching the ExtractedDocument schema.
+
+  medical: >
+    You are extracting data from a medical or clinical document. Pay special attention to:
+    - Drug names, dosages, and administration routes
+    - Patient demographics and clinical outcomes
+    - Diagnostic criteria and test results
+    - Regulatory body references (FDA, WHO, EMA)
     Output as structured JSON matching the ExtractedDocument schema.
 
   general: >
