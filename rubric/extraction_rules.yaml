@@ -1,0 +1,141 @@
+# extraction_rules.yaml
+# The single source of truth for all extraction thresholds and chunking rules.
+# Change behavior by editing this file — no code changes required.
+# Documented in DOMAIN_NOTES.md with empirical justification.
+
+# =============================================================================
+# TRIAGE THRESHOLDS
+# Used by src/agents/triage.py to classify documents
+# =============================================================================
+triage:
+  # Character density (chars per pt²) — distinguishes digital from scanned
+  char_density_min: 0.05           # Below this → page has poor text content
+  char_density_scanned: 0.001      # Hard cutoff: page is essentially scanned
+
+  # Image area as fraction of total page area
+  image_area_scanned: 0.80         # >80% image → page is scanned
+  image_area_max: 0.50             # >50% image → layout concern, escalate to B
+
+  # Document-level scanned page ratios
+  scanned_page_ratio: 0.40         # ≥40% scanned pages → MIXED origin
+  scanned_page_ratio_hard: 0.80    # ≥80% scanned pages → SCANNED_IMAGE origin
+
+  # Table and figure detection thresholds
+  table_page_ratio: 0.30           # ≥30% pages with tables → TABLE_HEAVY
+  figure_page_ratio: 0.30          # ≥30% pages with figures → FIGURE_HEAVY
+
+  # Column detection
+  multi_column_gap_min: 50.0       # pt — minimum x-gap to consider a column break
+  multi_column_count: 2            # Estimated columns ≥ this → MULTI_COLUMN
+
+
+# =============================================================================
+# EXTRACTION CONFIDENCE THRESHOLDS
+# Used by ExtractionRouter to gate escalation between strategies
+# =============================================================================
+extraction:
+  # Strategy A → B escalation
+  confidence_threshold_ab: 0.75    # FastText confidence < 0.75 → escalate to Layout
+
+  # Strategy B → C escalation
+  confidence_threshold_bc: 0.60    # Layout confidence < 0.60 → escalate to Vision
+
+  # Confidence signal weights for Strategy A (FastTextExtractor)
+  confidence_weights:
+    char_density: 0.40             # Most important signal
+    image_area_penalty: 0.30       # High image area penalizes confidence
+    font_metadata: 0.20            # Embedded fonts = digital PDF
+    whitespace_ratio: 0.10         # Reasonable whitespace = structured text
+
+  # FastText Strategy A specific gates
+  fast_text:
+    min_char_count_per_page: 100   # Pages below this are likely scanned or blank
+    max_image_area_ratio: 0.50     # Pages above this need layout analysis
+
+  # Vision Strategy C budget guard
+  vision:
+    budget_cap_usd: 0.10           # Maximum spend per document
+    model_primary: "google/gemini-flash-1.5"     # Cheap, fast, capable
+    model_fallback: "openai/gpt-4o-mini"         # Fallback if primary unavailable
+    max_pages_per_call: 5          # Batch pages to reduce API calls
+    prompt_template: "financial"   # Use financial prompt for Ethiopian docs
+
+
+# =============================================================================
+# CHUNKING CONSTITUTION
+# The 5 rules enforced by ChunkingEngine and verified by ChunkValidator
+# Violations cause ChunkValidator to raise ChunkingRuleViolation
+# =============================================================================
+chunking:
+  # Maximum token count for a single LDU before splitting is forced
+  max_tokens_per_chunk: 512
+  min_tokens_per_chunk: 50
+
+  # Rule R1: Table cells never split from header row
+  rule_r1_table_header_protection: true
+
+  # Rule R2: Figure caption always stored as parent figure metadata
+  rule_r2_caption_as_metadata: true
+
+  # Rule R3: Numbered lists kept as single LDU unless they exceed max_tokens
+  rule_r3_list_unity: true
+  rule_r3_list_max_tokens: 512
+
+  # Rule R4: Section headers stored as parent_section on all child chunks
+  rule_r4_section_context: true
+
+  # Rule R5: Cross-references resolved and stored as chunk relationships
+  rule_r5_cross_reference_resolution: true
+
+  # Caption proximity: how close (in pt) a caption must be to its figure
+  caption_proximity_threshold: 50.0
+
+
+# =============================================================================
+# PAGEINDEX SETTINGS
+# Used by src/agents/indexer.py (final submission)
+# =============================================================================
+pageindex:
+  # LLM for section summaries — must be fast and cheap
+  summary_model: "google/gemini-flash-1.5"
+  summary_max_tokens: 150           # 2-3 sentences
+
+  # Top-k sections to return from navigate() keyword search
+  navigate_top_k: 3
+
+  # Minimum section length to include in index
+  min_section_chars: 100
+
+
+# =============================================================================
+# DOMAIN-SPECIFIC EXTRACTION PROMPTS
+# Used by VisionExtractor to guide VLM extraction per domain
+# =============================================================================
+prompts:
+  financial: >
+    You are extracting data from a financial document. Pay special attention to:
+    - All monetary values (preserve currency symbols and unit scale: millions, billions)
+    - Table headers and their column relationships
+    - Dates and fiscal periods
+    - Named entities: organizations, regulatory bodies
+    Output as structured JSON matching the ExtractedDocument schema.
+
+  legal: >
+    You are extracting data from a legal document. Pay special attention to:
+    - Clause numbers and article references
+    - Defined terms (usually in quotation marks or bold)
+    - Party names and their roles
+    - Dates, deadlines, and obligations
+    Output as structured JSON matching the ExtractedDocument schema.
+
+  technical: >
+    You are extracting data from a technical report. Pay special attention to:
+    - Section numbering hierarchy
+    - Tables with assessment findings
+    - Recommendations and action items
+    - Acronyms and their definitions
+    Output as structured JSON matching the ExtractedDocument schema.
+
+  general: >
+    Extract all text content, preserving section structure, table data, and
+    figure captions. Output as structured JSON matching the ExtractedDocument schema.
