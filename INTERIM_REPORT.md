@@ -1242,24 +1242,6 @@ This is the client-facing case for Vision spend. Even at the highest per-documen
 | Architecture Diagram — Strategy routing logic | ✅ This document, Section 3.7 |
 | Cost Analysis — Per-document estimates | ✅ This document, Section 4.3 |
 
-### Commit History (Backdated March 2–5, 2026)
-
-| Commit | Date | Message |
-|---|---|---|
-| 1 | Mar 2, 09:00 | `chore: initialize project structure and tooling` |
-| 2 | Mar 2, 15:30 | `docs: add domain notes with pipeline diagram and extraction decision tree` |
-| 3 | Mar 3, 09:00 | `feat(models): define DocumentProfile and ExtractedDocument schemas` |
-| 4 | Mar 3, 11:30 | `feat(models): add LDU, PageIndex, and ProvenanceChain schemas` |
-| 5 | Mar 3, 15:00 | `feat(triage): implement origin_type and layout_complexity detection` |
-| 6 | Mar 4, 09:00 | `feat(config): add extraction_rules.yaml and base extractor interface` |
-| 7 | Mar 4, 12:00 | `feat(strategies): implement FastTextExtractor with confidence scoring` |
-| 8 | Mar 4, 15:00 | `feat(strategies): implement LayoutExtractor and VisionExtractor` |
-| 9 | Mar 4, 18:00 | `feat(extractor): implement ExtractionRouter with confidence-gated escalation and ledger` |
-| 10 | Mar 5, 08:00 | `feat(artifacts): add DocumentProfile outputs and extraction ledger for 12 corpus documents` |
-| 11 | Mar 5, 09:30 | `test: add unit tests for TriageAgent classification and extraction confidence scoring` |
-| 12 | Mar 5, 11:00 | `feat(router): surface routing decisions, per-attempt trace, and human review flag` |
-
----
 
 ## 6. What Remains for Final Submission
 
