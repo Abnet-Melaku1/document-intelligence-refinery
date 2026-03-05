@@ -545,6 +545,66 @@ class BaseExtractor(ABC):
 `ExtractionResult` contains:
 - `document: ExtractedDocument` — the extracted content
 - `escalate: bool` — whether the router should try the next strategy tier
+- `escalation_reason: Optional[EscalationReason]` — structured enum: `LOW_CONFIDENCE`, `EXCEPTION_RAISED`, or `BUDGET_EXHAUSTED`
+- `escalation_detail: Optional[str]` — human-readable detail (e.g. `"confidence 0.43 < threshold 0.75"`)
+
+This structured escalation signal replaces the bare boolean from earlier iterations — every escalation now carries a typed reason and a descriptive message that flows directly into the ledger and the `ExtractedDocument` audit trail.
+
+#### ExtractionRouter — Routing Metadata Models
+
+The `ExtractionRouter` populates three new embedded models on every `ExtractedDocument`:
+
+**`RoutingDecision`** — captures *why* the initial strategy was chosen:
+```python
+class RoutingDecision(BaseModel):
+    initial_strategy: ExtractionStrategy   # The first strategy attempted
+    selection_reason: str                  # Human-readable explanation (profile signals)
+    origin_type: str                       # e.g. "native_digital"
+    layout_complexity: str                 # e.g. "multi_column"
+    estimated_extraction_cost: str         # e.g. "needs_layout_model"
+    avg_char_density: float
+    avg_image_area_ratio: float
+    scanned_page_count: int
+    strategy_chain: list[ExtractionStrategy]  # Full chain: [LAYOUT, VISION]
+```
+
+**`StrategyAttempt`** — one record per strategy execution:
+```python
+class StrategyAttempt(BaseModel):
+    strategy: ExtractionStrategy
+    confidence_score: float           # 0.0 – 1.0
+    escalated: bool                   # True = confidence was insufficient
+    escalation_reason: Optional[EscalationReason]
+    escalation_detail: Optional[str]  # e.g. "confidence 0.43 < threshold 0.75"
+    cost_usd: float
+    processing_time_seconds: float
+```
+
+**`EscalationReason`** — typed enum distinguishing failure modes:
+```python
+class EscalationReason(str, Enum):
+    LOW_CONFIDENCE   = "low_confidence"    # Score below strategy threshold
+    EXCEPTION_RAISED = "exception_raised"  # Unhandled exception in strategy
+    BUDGET_EXHAUSTED = "budget_exhausted"  # Vision API budget cap hit mid-doc
+```
+
+**Human Review Flag** — post-chain safety net:
+```python
+# On ExtractedDocument:
+requires_human_review: bool = False
+human_review_reason: Optional[str] = None
+
+# Triggered when:
+if final_confidence < human_review_threshold:   # default: 0.50 from extraction_rules.yaml
+    document.requires_human_review = True
+    document.human_review_reason = (
+        f"Final confidence {conf:.4f} is below human_review_threshold "
+        f"{threshold} after exhausting all strategies. "
+        f"Attempt trace: [fast_text(0.43) → layout(0.51) → vision(0.48)]..."
+    )
+```
+
+This flag surfaces documents that need analyst attention rather than silently passing degraded content to the Chunking Engine.
 
 The `ExtractionRouter` orchestrates the escalation chain without knowing the internals of any individual strategy.
 
@@ -730,46 +790,134 @@ The Query Agent is implemented as a LangGraph agent with three tools:
 
 The escalation mechanism is the most critical safety feature of the Refinery. It prevents the "garbage in, hallucination out" failure mode by ensuring that low-quality extraction never silently propagates to the Chunking Engine.
 
+#### Routing Algorithm
+
+The `ExtractionRouter._build_chain()` maps `DocumentProfile.estimated_extraction_cost` to a starting index in the ordered strategy list `[FAST_TEXT, LAYOUT, VISION]`:
+
+| `estimated_extraction_cost` | Starting strategy | Chain executed |
+|---|---|---|
+| `fast_text_sufficient` | Strategy A | A → B → C |
+| `needs_layout_model` | Strategy B | B → C |
+| `needs_vision_model` | Strategy C | C only |
+
+A `force_strategy` override is supported for manual re-runs and testing — the tail of the chain still applies.
+
+#### Full Escalation Sequence (with Routing Metadata)
+
 ```mermaid
 sequenceDiagram
     participant Router as ExtractionRouter
     participant A as Strategy A (pdfplumber)
     participant B as Strategy B (Docling)
     participant C as Strategy C (VLM)
-    participant LED as Ledger
+    participant LED as Ledger (JSONL)
 
-    Router->>Router: Read DocumentProfile
-    Router->>Router: Select initial strategy from estimated_extraction_cost
+    Router->>Router: _build_chain(profile) → [A, B, C]
+    Router->>Router: _build_routing_decision() → RoutingDecision
 
-    alt estimated_cost = fast_text_sufficient
-        Router->>A: extract(file_path, profile)
-        A-->>Router: ExtractionResult(doc, escalate=?)
-        alt confidence ≥ 0.75
-            Router->>LED: Log {strategy: A, confidence: 0.91, escalations: 0}
-            Router-->>Router: Return ExtractedDocument ✅
-        else confidence < 0.75
-            Router->>LED: Log escalation A→B
-            Router->>B: extract(file_path, profile)
-            B-->>Router: ExtractionResult(doc, escalate=?)
-            alt confidence ≥ 0.60
-                Router->>LED: Log {strategy: B, confidence: 0.78, escalations: 1}
-                Router-->>Router: Return ExtractedDocument ✅
-            else confidence < 0.60
-                Router->>LED: Log escalation B→C
-                Router->>C: extract(file_path, profile)
-                C-->>Router: ExtractionResult(doc, escalate=false)
-                Router->>LED: Log {strategy: C, confidence: 0.88, escalations: 2}
-                Router-->>Router: Return ExtractedDocument ✅
-            end
-        end
-    else estimated_cost = needs_layout_model
-        Router->>B: extract(file_path, profile)
-        Note over Router,B: Same escalation pattern from B onward
-    else estimated_cost = needs_vision_model
-        Router->>C: extract(file_path, profile)
-        Note over Router,C: Directly to C — terminal
-    end
+    Router->>A: extract(file_path, profile)
+    A-->>Router: ExtractionResult(doc, escalate=True,<br/>reason=LOW_CONFIDENCE,<br/>detail="0.43 < 0.75")
+
+    Note over Router: Record StrategyAttempt(A, 0.43, escalated=True)
+
+    Router->>B: extract(file_path, profile)
+    B-->>Router: ExtractionResult(doc, escalate=True,<br/>reason=LOW_CONFIDENCE,<br/>detail="0.51 < 0.60")
+
+    Note over Router: Record StrategyAttempt(B, 0.51, escalated=True)
+
+    Router->>C: extract(file_path, profile)
+    C-->>Router: ExtractionResult(doc, escalate=False)
+
+    Note over Router: Record StrategyAttempt(C, 0.88, escalated=False)
+
+    Router->>Router: Attach routing_decision + strategy_attempts to final_doc
+    Router->>Router: _evaluate_human_review() — check 0.88 ≥ 0.50 ✅
+
+    Router->>LED: _write_ledger_entry(profile, final_doc)
+    Note over LED: routing{}, strategy_attempts[], requires_human_review
 ```
+
+#### Human Review Safety Net
+
+After the full strategy chain is exhausted, `_evaluate_human_review()` checks the final confidence against `human_review_threshold` (default: `0.50` from `extraction_rules.yaml`):
+
+```yaml
+# rubric/extraction_rules.yaml
+extraction:
+  confidence_threshold_ab: 0.75   # A→B escalation trigger
+  confidence_threshold_bc: 0.60   # B→C escalation trigger
+  human_review_threshold: 0.50    # Post-chain safety net — flag for analyst review
+```
+
+When the final result still falls below `0.50`, the document is flagged with a full attempt trace rather than silently passed to the Chunking Engine:
+
+```
+⚠ HUMAN REVIEW REQUIRED
+
+Final confidence 0.48 is below human_review_threshold 0.50 after exhausting all strategies.
+Attempt trace: [fast_text(0.43) → layout(0.51) → vision(0.48)].
+Possible causes: extreme scan degradation, unusual layout,
+non-standard encoding, or content requiring specialist interpretation.
+```
+
+#### Enhanced Ledger Schema
+
+Every run appends one fully-detailed entry to `.refinery/extraction_ledger.jsonl`. The new schema includes the full routing provenance:
+
+```json
+{
+  "timestamp": "2026-03-05T09:12:34.210Z",
+  "doc_id": "a4f8c2e1b9d30f12",
+  "filename": "nbe_annual_report_2024.pdf",
+  "page_count": 48,
+  "origin_type": "native_digital",
+  "layout_complexity": "multi_column",
+  "triage_cost_estimate": "needs_layout_model",
+
+  "routing": {
+    "initial_strategy": "layout",
+    "selection_reason": "DocumentProfile indicates layout complexity requiring structural analysis...",
+    "strategy_chain": ["layout", "vision"]
+  },
+
+  "strategy_attempts": [
+    {
+      "strategy": "layout",
+      "confidence_score": 0.51,
+      "escalated": true,
+      "escalation_reason": "low_confidence",
+      "escalation_detail": "confidence 0.51 < threshold 0.60",
+      "cost_usd": 0.0,
+      "processing_time_seconds": 4.2
+    },
+    {
+      "strategy": "vision",
+      "confidence_score": 0.88,
+      "escalated": false,
+      "escalation_reason": null,
+      "escalation_detail": null,
+      "cost_usd": 0.0576,
+      "processing_time_seconds": 31.7
+    }
+  ],
+
+  "strategy_used": "vision",
+  "confidence_score": 0.88,
+  "escalation_count": 1,
+  "cost_estimate_usd": 0.0576,
+  "processing_time_seconds": 31.7,
+
+  "text_block_count": 312,
+  "table_count": 14,
+  "figure_count": 8,
+  "warning_count": 0,
+
+  "requires_human_review": false,
+  "human_review_reason": null
+}
+```
+
+This ledger record is written atomically at the end of each extraction run, ensuring the full audit trail is always consistent even if downstream stages fail.
 
 ---
 
@@ -797,7 +945,12 @@ ExtractedDocument                   (src/models/extracted_document.py)
   ├── figures: List[FigureBlock]    bbox + caption + alt_text
   ├── strategy_used: Enum           fast_text | layout | vision
   ├── confidence_score: float       0.0 – 1.0
-  └── cost_estimate_usd: float      $0.00 for A/B, actual API cost for C
+  ├── cost_estimate_usd: float      $0.00 for A/B, actual API cost for C
+  ├── routing_decision: RoutingDecision   initial strategy + selection reason + profile signals
+  ├── strategy_attempts: List[StrategyAttempt]  per-attempt confidence, reason, cost, timing
+  ├── requires_human_review: bool   True when final confidence < human_review_threshold
+  ├── human_review_reason: str      Full attempt trace + root cause explanation
+  └── escalation_count: int         (property) count of attempts where escalated=True
   │
   ▼
 List[LDU]                           (src/models/ldu.py)
@@ -1065,8 +1218,12 @@ This is the client-facing case for Vision spend. Even at the highest per-documen
 | `FastTextExtractor` with confidence scoring | ✅ Complete | `src/strategies/fast_text.py` |
 | `LayoutExtractor` (Docling adapter) | ✅ Complete | `src/strategies/layout.py` |
 | `VisionExtractor` with budget guard | ✅ Complete | `src/strategies/vision.py` |
-| `ExtractionRouter` with escalation guard | ✅ Complete | `src/agents/extractor.py` |
-| `extraction_rules.yaml` | ✅ Complete | `rubric/extraction_rules.yaml` |
+| `ExtractionRouter` with confidence-gated escalation | ✅ Complete | `src/agents/extractor.py` |
+| `RoutingDecision` / `StrategyAttempt` / `EscalationReason` models | ✅ Complete | `src/models/extracted_document.py` |
+| Human review flag (`requires_human_review`) + reason | ✅ Complete | `src/agents/extractor.py` |
+| Structured escalation reason in `ExtractionResult` | ✅ Complete | `src/strategies/base.py` |
+| Enhanced ledger schema (`routing{}` + `strategy_attempts[]`) | ✅ Complete | `src/agents/extractor.py` |
+| `extraction_rules.yaml` with `human_review_threshold` | ✅ Complete | `rubric/extraction_rules.yaml` |
 | DocumentProfile JSONs (12 documents, 3/class) | ✅ Complete | `.refinery/profiles/*.json` |
 | `extraction_ledger.jsonl` (12 entries) | ✅ Complete | `.refinery/extraction_ledger.jsonl` |
 | `pyproject.toml` with locked deps | ✅ Complete | `pyproject.toml` |
@@ -1100,6 +1257,7 @@ This is the client-facing case for Vision spend. Even at the highest per-documen
 | 9 | Mar 4, 18:00 | `feat(extractor): implement ExtractionRouter with confidence-gated escalation and ledger` |
 | 10 | Mar 5, 08:00 | `feat(artifacts): add DocumentProfile outputs and extraction ledger for 12 corpus documents` |
 | 11 | Mar 5, 09:30 | `test: add unit tests for TriageAgent classification and extraction confidence scoring` |
+| 12 | Mar 5, 11:00 | `feat(router): surface routing decisions, per-attempt trace, and human review flag` |
 
 ---
 
