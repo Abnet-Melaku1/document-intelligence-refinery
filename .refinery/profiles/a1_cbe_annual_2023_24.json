@@ -1,0 +1,25 @@
+{
+  "doc_id": "3f8a2c1d9e4b7051",
+  "filename": "CBE ANNUAL REPORT 2023-24.pdf",
+  "file_path": "data/data/CBE ANNUAL REPORT 2023-24.pdf",
+  "page_count": 148,
+  "file_size_bytes": 12458304,
+  "origin_type": "native_digital",
+  "layout_complexity": "multi_column",
+  "language": "en",
+  "language_confidence": 0.97,
+  "domain_hint": "financial",
+  "estimated_extraction_cost": "needs_layout_model",
+  "avg_char_density": 0.8432,
+  "avg_image_area_ratio": 0.1823,
+  "scanned_page_count": 0,
+  "table_page_count": 42,
+  "column_count_estimate": 2,
+  "triage_version": "1.0.0",
+  "processing_time_seconds": 4.821,
+  "page_stats": [
+    {"page_number": 1, "char_count": 312, "char_density": 0.2140, "image_area_ratio": 0.6500, "has_tables": false, "has_figures": true, "is_likely_scanned": false},
+    {"page_number": 2, "char_count": 1840, "char_density": 1.2600, "image_area_ratio": 0.0500, "has_tables": false, "has_figures": false, "is_likely_scanned": false},
+    {"page_number": 3, "char_count": 2104, "char_density": 1.4400, "image_area_ratio": 0.0200, "has_tables": false, "has_figures": false, "is_likely_scanned": false}
+  ]
+}

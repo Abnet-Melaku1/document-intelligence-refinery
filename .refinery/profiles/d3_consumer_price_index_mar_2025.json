@@ -1,0 +1,25 @@
+{
+  "doc_id": "5a9c3f1e7d4b2081",
+  "filename": "Consumer Price Index March 2025.pdf",
+  "file_path": "data/data/Consumer Price Index March 2025.pdf",
+  "page_count": 32,
+  "file_size_bytes": 1507328,
+  "origin_type": "native_digital",
+  "layout_complexity": "table_heavy",
+  "language": "en",
+  "language_confidence": 0.97,
+  "domain_hint": "financial",
+  "estimated_extraction_cost": "needs_layout_model",
+  "avg_char_density": 0.5140,
+  "avg_image_area_ratio": 0.1720,
+  "scanned_page_count": 0,
+  "table_page_count": 28,
+  "column_count_estimate": 1,
+  "triage_version": "1.0.0",
+  "processing_time_seconds": 1.018,
+  "page_stats": [
+    {"page_number": 1, "char_count": 620, "char_density": 0.4240, "image_area_ratio": 0.2600, "has_tables": false, "has_figures": true, "is_likely_scanned": false},
+    {"page_number": 2, "char_count": 870, "char_density": 0.5950, "image_area_ratio": 0.0900, "has_tables": true, "has_figures": false, "is_likely_scanned": false},
+    {"page_number": 3, "char_count": 720, "char_density": 0.4930, "image_area_ratio": 0.0700, "has_tables": true, "has_figures": false, "is_likely_scanned": false}
+  ]
+}

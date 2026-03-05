@@ -1,0 +1,25 @@
+{
+  "doc_id": "4d8b2e5f9a1c7036",
+  "filename": "fta_performance_survey_final_report_2022.pdf",
+  "file_path": "data/data/fta_performance_survey_final_report_2022.pdf",
+  "page_count": 112,
+  "file_size_bytes": 5832704,
+  "origin_type": "native_digital",
+  "layout_complexity": "mixed",
+  "language": "en",
+  "language_confidence": 0.98,
+  "domain_hint": "technical",
+  "estimated_extraction_cost": "needs_layout_model",
+  "avg_char_density": 1.1240,
+  "avg_image_area_ratio": 0.1420,
+  "scanned_page_count": 0,
+  "table_page_count": 38,
+  "column_count_estimate": 1,
+  "triage_version": "1.0.0",
+  "processing_time_seconds": 3.614,
+  "page_stats": [
+    {"page_number": 1, "char_count": 820, "char_density": 0.5610, "image_area_ratio": 0.3200, "has_tables": false, "has_figures": true, "is_likely_scanned": false},
+    {"page_number": 2, "char_count": 2340, "char_density": 1.6000, "image_area_ratio": 0.0100, "has_tables": false, "has_figures": false, "is_likely_scanned": false},
+    {"page_number": 3, "char_count": 1980, "char_density": 1.3500, "image_area_ratio": 0.0800, "has_tables": true, "has_figures": false, "is_likely_scanned": false}
+  ]
+}
