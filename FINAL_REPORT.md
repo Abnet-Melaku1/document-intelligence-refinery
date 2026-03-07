@@ -225,7 +225,7 @@ The PageIndexBuilder walks the LDU list and builds a hierarchical `PageIndex` tr
 1. **Step 1 — Heading skeleton**: HEADING LDUs become `PageIndexNode` objects; heading level drives the tree hierarchy via a parent stack.
 2. **Step 2 — Chunk assignment**: Non-heading LDUs are matched to their parent node by `parent_section` title lookup; page_end is extended as chunks are added.
 3. **Step 3 — Reverse index**: `page_to_nodes` dict maps page number → list of node_ids for fast "what sections are on page N?" queries.
-4. **Step 4 — Summaries + entities**: LLM summary via OpenRouter (Gemini Flash 1.5) for sections with >= `min_section_chars` characters; extractive fallback when no API key. Regex entity extraction for monetary values, dates, and proper nouns.
+4. **Step 4 — Summaries + entities**: LLM summary via Google Gemini (gemini-2.0-flash) for sections with >= `min_section_chars` characters; extractive fallback when no API key. Regex entity extraction for monetary values, dates, and proper nouns.
 
 **PageIndex storage:** `.refinery/pageindex/{doc_id}.json`
 
@@ -241,7 +241,7 @@ The PageIndexBuilder walks the LDU list and builds a hierarchical `PageIndex` tr
 User question
      │
      ▼
-LLM (Gemini Flash via OpenRouter)
+LLM (Gemini 2.0 Flash via google-genai SDK)
      │  Thought: "I need to find revenue figures"
      │  Action: {"tool": "search_chunks", "input": {"query": "revenue 2024"}}
      ▼
@@ -345,7 +345,7 @@ The `content_hash` enables **offline verification**: a reviewer can recompute `s
 | ---------------------------------------- | --------------- | ----------------------------------------------- |
 | Strategy A — FastText (pdfplumber)       | $0.000          | Native digital PDFs with clean text             |
 | Strategy B — Layout (Docling)            | $0.000          | Complex multi-column layouts, embedded tables   |
-| Strategy C — Vision (VLM via OpenRouter) | ~$0.025         | Scanned images, handwritten text, form-fillable |
+| Strategy C — Vision (Gemini 2.0 Flash via google-genai) | ~$0.025         | Scanned images, handwritten text, form-fillable |
 | PageIndex LLM summaries                  | ~$0.001/section | Optional; extractive fallback available         |
 | QueryAgent (per query)                   | ~$0.002–0.005   | Depends on iteration count and context size     |
 
@@ -442,7 +442,7 @@ The three retrieval methods are intentionally distributed:
 | ---------------------------------------- | ----------- | ----------------------------------- |
 | Strategy A — FastText (pdfplumber)       | ✅ Complete | `src/strategies/fast_text.py`       |
 | Strategy B — Layout (Docling stub)       | ✅ Complete | `src/strategies/layout.py`          |
-| Strategy C — Vision (VLM via OpenRouter) | ✅ Complete | `src/strategies/vision.py`          |
+| Strategy C — Vision (Gemini 2.0 Flash via google-genai) | ✅ Complete | `src/strategies/vision.py`          |
 | A→B→C escalation with confidence gates   | ✅ Complete | `src/agents/extractor.py`           |
 | Routing decision embedding               | ✅ Complete | `src/models/extracted_document.py`  |
 | Human review flag                        | ✅ Complete | `src/agents/extractor.py`           |
@@ -468,7 +468,7 @@ The three retrieval methods are intentionally distributed:
 | HEADING-driven tree construction      | ✅ Complete | `src/agents/indexer.py` |
 | Chunk-to-node assignment              | ✅ Complete | `src/agents/indexer.py` |
 | page_to_nodes reverse index           | ✅ Complete | `src/agents/indexer.py` |
-| LLM section summaries (OpenRouter)    | ✅ Complete | `src/agents/indexer.py` |
+| LLM section summaries (Gemini)    | ✅ Complete | `src/agents/indexer.py` |
 | Extractive summary fallback           | ✅ Complete | `src/agents/indexer.py` |
 | Entity extraction (monetary/date/org) | ✅ Complete | `src/agents/indexer.py` |
 | 12 PageIndex JSONs                    | ✅ Complete | `.refinery/pageindex/`  |
@@ -558,4 +558,4 @@ docker compose run refinery python -m src.agents.audit "Revenue grew 18%"
 | **FactTable queries**         | Raw SQL in query_facts tool                    | Add a NL→SQL layer (text-to-SQL) so users don't need to write SQL; schema introspection for the LLM                   |
 | **Bounding box provenance**   | Not stored in VectorStore (ChromaDB metadata)  | Store bbox as JSON in ChromaDB metadata; surface in ProvenanceEntry                                                   |
 | **Evaluation harness**        | 12 hand-crafted Q&A examples                   | Automated evaluation with LLM-as-judge on full 50-document corpus; precision@k metrics                                |
-| **Scanned document handling** | VLM via OpenRouter (GPT-4V equivalent)         | Add Tesseract as a cheap OCR tier between Docling and VLM; reduces Vision API calls by ~30%                           |
+| **Scanned document handling** | Gemini 2.0 Flash via google-genai SDK         | Add Tesseract as a cheap OCR tier between Docling and VLM; reduces Vision API calls by ~30%                           |

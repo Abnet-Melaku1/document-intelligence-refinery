@@ -187,8 +187,8 @@ extraction:
   # --- Vision Strategy C budget guard ---
   vision:
     budget_cap_usd: 0.10           # Maximum spend per document
-    model_primary: "google/gemini-flash-1.5"     # Cheap, fast, capable
-    model_fallback: "openai/gpt-4o-mini"         # Fallback if primary unavailable
+    model_primary: "gemini-2.0-flash"     # Cheap, fast, capable
+    model_fallback: "gemini-1.5-flash"         # Fallback if primary unavailable
     max_pages_per_call: 5          # Batch pages to reduce API calls
     prompt_template: "financial"   # Use financial prompt for Ethiopian docs
 
@@ -240,7 +240,7 @@ chunking:
 # =============================================================================
 pageindex:
   # LLM for section summaries — must be fast and cheap
-  summary_model: "google/gemini-flash-1.5"
+  summary_model: "gemini-2.0-flash"
   summary_max_tokens: 150           # 2-3 sentences
 
   # Top-k sections to return from navigate() keyword search
@@ -291,3 +291,11 @@ prompts:
   general: >
     Extract all text content, preserving section structure, table data, and
     figure captions. Output as structured JSON matching the ExtractedDocument schema.
+
+# =============================================================================
+# QUERY AGENT SETTINGS
+# Used by src/agents/query_agent.py and src/agents/audit.py
+# =============================================================================
+query:
+  model: "gemini-2.0-flash"
+  max_iterations: 6

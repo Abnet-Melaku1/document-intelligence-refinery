@@ -90,7 +90,7 @@ def _extractive_summary(text: str, max_sentences: int = 2) -> str:
 
 
 # ---------------------------------------------------------------------------
-# LLM summary via OpenRouter
+# LLM summary via Google Gemini
 # ---------------------------------------------------------------------------
 
 def _llm_summary(
@@ -100,9 +100,10 @@ def _llm_summary(
     max_tokens: int,
     api_key: str,
 ) -> str:
-    """Call OpenRouter to generate a 2-3 sentence section summary."""
+    """Call Google Gemini to generate a 2-3 sentence section summary."""
     try:
-        import httpx
+        from google import genai
+        from google.genai import types as gtypes
     except ImportError:
         return _extractive_summary(section_text)
 
@@ -114,22 +115,16 @@ def _llm_summary(
     )
 
     try:
-        resp = httpx.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": model,
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": max_tokens,
-                "temperature": 0.3,
-            },
-            timeout=30.0,
+        client = genai.Client(api_key=api_key)
+        resp = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=gtypes.GenerateContentConfig(
+                max_output_tokens=max_tokens,
+                temperature=0.3,
+            ),
         )
-        resp.raise_for_status()
-        return resp.json()["choices"][0]["message"]["content"].strip()
+        return resp.text.strip()
     except Exception as exc:
         print(f"[PageIndexBuilder] LLM summary failed ({exc}), using extractive fallback", file=sys.stderr)
         return _extractive_summary(section_text)
@@ -156,10 +151,10 @@ class PageIndexBuilder:
 
     def __init__(self, rules_path: str = "rubric/extraction_rules.yaml"):
         cfg = _load_index_config(rules_path)
-        self.summary_model = cfg.get("summary_model", "google/gemini-flash-1.5")
+        self.summary_model = cfg.get("summary_model", "gemini-2.0-flash")
         self.summary_max_tokens = cfg.get("summary_max_tokens", 150)
         self.min_section_chars = cfg.get("min_section_chars", 100)
-        self._api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        self._api_key = os.environ.get("GEMINI_API_KEY", "")
 
     # ------------------------------------------------------------------
     # Public API

@@ -227,40 +227,40 @@ User question
 | Feature | Service | Key Variable |
 |---------|---------|-------------|
 | Stage 2 — Strategy B (Docling) | Local (free) | None — model downloads automatically |
-| Stage 2 — Strategy C (VLM) | OpenRouter | `OPENROUTER_API_KEY` |
-| Stage 4 — LLM section summaries | OpenRouter | `OPENROUTER_API_KEY` |
-| QueryAgent — full ReAct loop | OpenRouter | `OPENROUTER_API_KEY` |
-| ClaimVerifier — LLM judgment | OpenRouter | `OPENROUTER_API_KEY` |
+| Stage 2 — Strategy C (VLM) | Google Gemini | `GEMINI_API_KEY` |
+| Stage 4 — LLM section summaries | Google Gemini | `GEMINI_API_KEY` |
+| QueryAgent — full ReAct loop | Google Gemini | `GEMINI_API_KEY` |
+| ClaimVerifier — LLM judgment | Google Gemini | `GEMINI_API_KEY` |
 
-### Getting an OpenRouter API Key
+### Getting a Gemini API Key
 
-1. Sign up at https://openrouter.ai
+1. Sign up at https://aistudio.google.com
 2. Go to **Keys** → **Create Key**
 3. Add credits (minimum $5 — enough for hundreds of queries at Gemini Flash pricing)
 4. Set in your shell:
 
 ```bash
 # Windows PowerShell
-$env:OPENROUTER_API_KEY = "sk-or-v1-..."
+$env:GEMINI_API_KEY = "AIza..."
 
 # Windows Command Prompt
-set OPENROUTER_API_KEY=sk-or-v1-...
+set GEMINI_API_KEY=AIza...
 
 # Or create a .env file in the project root:
-echo OPENROUTER_API_KEY=sk-or-v1-... > .env
+echo GEMINI_API_KEY=AIza... > .env
 ```
 
 ### Default LLM Model
 
-The pipeline defaults to `google/gemini-flash-1.5` via OpenRouter (~$0.001/query).
+The pipeline defaults to `gemini-2.0-flash` via google-genai SDK (free tier: 1,500 req/day).
 Change it in `rubric/extraction_rules.yaml`:
 
 ```yaml
 pageindex:
-  summary_model: google/gemini-flash-1.5   # change this
+  summary_model: gemini-2.0-flash   # change this
 
 query:
-  model: google/gemini-flash-1.5           # and this
+  model: gemini-2.0-flash           # and this
 ```
 
 ---
@@ -298,7 +298,7 @@ This installs:
 - `pydantic` — data models
 - `chromadb` + `sentence-transformers` — vector store and embeddings
 - `tiktoken` — token counting
-- `httpx` — OpenRouter API calls
+- `httpx` — HTTP client (Gemini API calls)
 - `rich` — terminal output
 - `pyyaml`, `python-dotenv` — config
 
@@ -356,8 +356,8 @@ uv run python -m src.agents.query_agent \
   "What was the capital adequacy ratio?" \
   3f8a2c1d9e4b7051
 
-# With OpenRouter key (full ReAct loop with LLM reasoning)
-$env:OPENROUTER_API_KEY="sk-or-..."
+# With Gemini key (full ReAct loop with LLM reasoning)
+$env:GEMINI_API_KEY="AIza..."
 uv run python -m src.agents.query_agent \
   "What was net profit in FY2023/24?" \
   3f8a2c1d9e4b7051
@@ -458,7 +458,7 @@ document-intelligence-refinery/
 │   │   ├── base.py            BaseExtractionStrategy ABC
 │   │   ├── fast_text.py       Strategy A: pdfplumber
 │   │   ├── layout.py          Strategy B: Docling
-│   │   └── vision.py          Strategy C: VLM via OpenRouter
+│   │   └── vision.py          Strategy C: Gemini 2.0 Flash via google-genai
 │   │
 │   └── store/
 │       ├── vector_store.py    ChromaDB semantic search
@@ -552,12 +552,12 @@ chunking:
   min_heading_font_size: 11.0    # minimum font size to classify as heading
 
 pageindex:
-  summary_model: google/gemini-flash-1.5
+  summary_model: gemini-2.0-flash
   summary_max_tokens: 150
   min_section_chars: 100         # sections shorter than this get the title as summary
 
 query:
-  model: google/gemini-flash-1.5
+  model: gemini-2.0-flash
 
 domains:
   financial:

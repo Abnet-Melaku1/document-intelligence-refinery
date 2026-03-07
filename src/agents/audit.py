@@ -101,7 +101,7 @@ class ClaimVerifier:
     """Verifies natural-language claims against ingested document content.
 
     Works in two modes:
-    - LLM mode (OPENROUTER_API_KEY set): uses the LLM to judge evidence.
+    - LLM mode (GEMINI_API_KEY set): uses the LLM to judge evidence.
     - Lexical mode (no API key): uses overlap/numeric matching heuristics.
     """
 
@@ -124,7 +124,7 @@ class ClaimVerifier:
         rules_path: str = "rubric/extraction_rules.yaml",
     ):
         self._vs = vector_store or VectorStore()
-        self._api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        self._api_key = os.environ.get("GEMINI_API_KEY", "")
         self._model = self._load_model(rules_path)
 
     # ------------------------------------------------------------------
@@ -242,10 +242,12 @@ class ClaimVerifier:
     ) -> list[SubClaim]:
         """Use LLM to judge each sub-claim against retrieved evidence."""
         try:
-            import httpx
+            from google import genai
+            from google.genai import types as gtypes
         except ImportError:
             return self._lexical_judge(sub_claims, evidence)
 
+        client = genai.Client(api_key=self._api_key)
         evidence_text = "\n\n".join(
             f"[{r.chunk_id} p.{r.page_refs[0] if r.page_refs else '?'}] {r.content[:300]}"
             for r in evidence[:5]
@@ -263,22 +265,15 @@ class ClaimVerifier:
             )
 
             try:
-                resp = httpx.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self._api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": self._model,
-                        "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 200,
-                        "temperature": 0.0,
-                    },
-                    timeout=20.0,
+                resp = client.models.generate_content(
+                    model=self._model,
+                    contents=prompt,
+                    config=gtypes.GenerateContentConfig(
+                        max_output_tokens=200,
+                        temperature=0.0,
+                    ),
                 )
-                resp.raise_for_status()
-                raw = resp.json()["choices"][0]["message"]["content"].strip()
+                raw = resp.text.strip()
 
                 # Extract JSON from response
                 json_match = re.search(r'\{.*\}', raw, re.DOTALL)
@@ -378,10 +373,10 @@ class ClaimVerifier:
             path = Path(rules_path)
             if path.exists():
                 data = yaml.safe_load(path.read_text()) or {}
-                return data.get("query", {}).get("model", "google/gemini-flash-1.5")
+                return data.get("query", {}).get("model", "gemini-2.0-flash")
         except Exception:
             pass
-        return "google/gemini-flash-1.5"
+        return "gemini-2.0-flash"
 
 
 # ---------------------------------------------------------------------------

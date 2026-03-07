@@ -55,44 +55,51 @@ git clone <repo-url>
 cd document-intelligence-refinery
 
 # Install with uv (recommended)
-uv sync
-
-# Or with pip
-pip install -e ".[dev]"
+uv venv --python 3.11
+uv pip install -e "."
 ```
 
 ### Environment Variables
 
-```bash
-cp .env.example .env
-# Edit .env and add your API keys
-```
-
-Required keys in `.env`:
+Create a `.env` file in the project root:
 
 ```
-OPENROUTER_API_KEY=your_key_here
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-VLM_MODEL=google/gemini-flash-1.5        # budget-aware default
-VLM_BUDGET_CAP_USD=0.10                  # max spend per document
+GEMINI_API_KEY=your_key_here        # Get free at aistudio.google.com
+VLM_BUDGET_CAP_USD=0.10             # max spend per document
 ```
+
+> **No API key needed** for Stages 1–3 (triage, extraction, chunking) and
+> vector search — those are fully local. `GEMINI_API_KEY` is only required
+> for LLM-powered section summaries (Stage 4) and the QueryAgent ReAct loop
+> (Stage 5). A free Gemini API key gives 1,500 requests/day.
 
 ### Run Triage on a Document
 
 ```bash
-python -m src.agents.triage path/to/document.pdf
+uv run python -m src.agents.triage "data/data/CBE ANNUAL REPORT 2023-24.pdf"
 ```
 
 ### Run Full Extraction Pipeline
 
 ```bash
-python -m src.agents.extractor path/to/document.pdf
+uv run python -m src.agents.extractor "data/data/CBE ANNUAL REPORT 2023-24.pdf"
+```
+
+### Query a Document
+
+```bash
+# Extractive mode (no API key needed)
+uv run python -m src.agents.query_agent "What was net profit?" <doc_id>
+
+# Full ReAct mode with Gemini
+$env:GEMINI_API_KEY="AIza..."
+uv run python -m src.agents.query_agent "What was net profit?" <doc_id>
 ```
 
 ### Run Tests
 
 ```bash
-pytest tests/ -v
+uv run pytest tests/test_triage.py tests/test_chunker.py -v
 ```
 
 ## Project Structure
@@ -119,7 +126,7 @@ tests/               # Unit tests
 |-----------|----------|------|------|
 | native_digital + single_column | A — Fast Text | pdfplumber | Low |
 | multi_column OR table_heavy OR mixed | B — Layout-Aware | Docling | Medium |
-| scanned_image OR confidence < threshold | C — Vision | Gemini Flash (OpenRouter) | High |
+| scanned_image OR confidence < threshold | C — Vision | Gemini 2.0 Flash (google-genai) | High |
 
 Thresholds are defined in `rubric/extraction_rules.yaml` and documented in `DOMAIN_NOTES.md`.
 

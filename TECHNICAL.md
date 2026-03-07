@@ -341,7 +341,7 @@ Every document produces one JSONL line in `.refinery/extraction_ledger.jsonl`:
 |------|-------|-------------|
 | `fast_text.py` | `FastTextExtractor` | `pdfplumber.open()` → iterate pages → `page.extract_text()`, `page.extract_tables()`, `page.images` |
 | `layout.py` | `LayoutExtractor` | Docling `DocumentConverter` → layout-aware bounding boxes for multi-column text |
-| `vision.py` | `VisionExtractor` | Renders each page as PNG → sends to OpenRouter VLM → parses markdown response |
+| `vision.py` | `VisionExtractor` | Renders each page as PNG → sends to Gemini 2.0 Flash via google-genai → parses response |
 
 All three inherit from `BaseExtractionStrategy` in `src/strategies/base.py`,
 which enforces the common `extract(file_path) → ExtractedDocument` interface.
@@ -484,7 +484,7 @@ PageIndexBuilder.run(doc_id, filename, page_count, ldus) → PageIndex
          section_text = concat first 20 child chunks (excluding figures)
          if len(section_text) < min_section_chars:
              node.summary = node.title   ← too short
-         elif OPENROUTER_API_KEY:
+         elif GEMINI_API_KEY:
              node.summary = _llm_summary(section_text, node.title, model, ...)
          else:
              node.summary = _extractive_summary(section_text)  ← first 2 sentences
@@ -535,7 +535,7 @@ an API key is set:
 ```
 QueryAgent.answer(question, doc_id) → ProvenanceChain
   │
-  ├─ if OPENROUTER_API_KEY:
+  ├─ if GEMINI_API_KEY:
   │    QueryAgent._react_answer(question, doc_id)
   │
   └─ else:
@@ -669,7 +669,7 @@ ClaimVerifier.verify(claim, doc_id) → AuditReport
   │      each match + ±20 char context → SubClaim(text=context)
   │
   ├─ 3. Judge each sub-claim
-  │    if OPENROUTER_API_KEY:
+  │    if GEMINI_API_KEY:
   │        _llm_judge(claim, sub_claims, evidence)
   │            for each sub_claim:
   │              prompt LLM: "Is '{sub_claim.text}' supported by this evidence?"
@@ -798,12 +798,12 @@ chunking:
   min_heading_font_size: 11.0   # below this → not treated as heading
 
 pageindex:
-  summary_model: google/gemini-flash-1.5
+  summary_model: gemini-2.0-flash
   summary_max_tokens: 150
   min_section_chars: 100        # sections with fewer chars skip LLM summary
 
 query:
-  model: google/gemini-flash-1.5
+  model: gemini-2.0-flash
 
 domains:
   financial:
@@ -869,7 +869,7 @@ uv run python -m src.agents.query_agent "What was net profit?" cafb11ca016fe487
    _load_page_index("cafb11ca016fe487") → .refinery/pageindex/cafb11ca016fe487.json
 
 2. QueryAgent.answer("What was net profit?", doc_id="cafb11ca016fe487")
-   no OPENROUTER_API_KEY → _extractive_answer()
+   no GEMINI_API_KEY → _extractive_answer()
 
 3. VectorStore.search("What was net profit?", top_k=5, doc_id="cafb11ca016fe487")
    embed query → cosine search → 5 results sorted by score

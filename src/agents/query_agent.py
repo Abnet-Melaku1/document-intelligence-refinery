@@ -17,7 +17,7 @@ orchestrating three retrieval tools in a ReAct loop:
 Every answer is wrapped in a ProvenanceChain that traces each claim to its
 exact source: document, page, bounding box, and content hash.
 
-LLM backend: OpenRouter (configurable model, default google/gemini-flash-1.5).
+LLM backend: Google Gemini via google-genai SDK (configurable model, default gemini-2.0-flash).
 Fallback: extractive answer from top search result when no API key is set.
 
 Usage:
@@ -103,7 +103,7 @@ class QueryAgent:
         rules_path: str = "rubric/extraction_rules.yaml",
     ):
         self._vs = vector_store or VectorStore()
-        self._api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        self._api_key = os.environ.get("GEMINI_API_KEY", "")
         self._model = self._load_model(rules_path)
         self._ft = self._load_fact_table()
         self._page_indexes: dict[str, Any] = {}  # lazy-loaded per doc_id
@@ -218,39 +218,35 @@ class QueryAgent:
         doc_id: Optional[str],
         max_sources: int,
     ) -> ProvenanceChain:
-        """Full ReAct loop using OpenRouter LLM."""
+        """Full ReAct loop using Google Gemini."""
         try:
-            import httpx
+            from google import genai
+            from google.genai import types as gtypes
         except ImportError:
             return self._extractive_answer(question, doc_id, max_sources)
 
+        client = genai.Client(api_key=self._api_key)
+        system_prompt = self._build_system_prompt(doc_id)
         steps: list[AgentStep] = []
         accumulated_results: list[SearchResult] = []
 
-        system_prompt = self._build_system_prompt(doc_id)
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question},
+        # Build conversation history as genai Content objects
+        contents: list = [
+            gtypes.Content(role="user", parts=[gtypes.Part(text=question)])
         ]
 
         for iteration in range(self.MAX_ITERATIONS):
             try:
-                resp = httpx.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self._api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": self._model,
-                        "messages": messages,
-                        "max_tokens": 800,
-                        "temperature": 0.1,
-                    },
-                    timeout=30.0,
+                resp = client.models.generate_content(
+                    model=self._model,
+                    contents=contents,
+                    config=gtypes.GenerateContentConfig(
+                        system_instruction=system_prompt,
+                        max_output_tokens=800,
+                        temperature=0.1,
+                    ),
                 )
-                resp.raise_for_status()
-                content = resp.json()["choices"][0]["message"]["content"].strip()
+                content = resp.text.strip()
             except Exception as exc:
                 print(f"[QueryAgent] LLM call failed: {exc}", file=sys.stderr)
                 break
@@ -258,7 +254,7 @@ class QueryAgent:
             # Parse the LLM response for tool calls or final answer
             step = self._parse_react_response(content)
             steps.append(step)
-            messages.append({"role": "assistant", "content": content})
+            contents.append(gtypes.Content(role="model", parts=[gtypes.Part(text=content)]))
 
             if step.final_answer:
                 # Collect supporting chunks for provenance
@@ -284,6 +280,7 @@ class QueryAgent:
                         accumulated_results.append(sr)
 
                 # Feed tool result back to LLM
+                from google.genai import types as gtypes
                 tool_content = json.dumps(
                     {"tool": step.tool_name, "result": tool_result.data}
                     if tool_result.success
@@ -291,7 +288,10 @@ class QueryAgent:
                     ensure_ascii=False,
                     default=str,
                 )
-                messages.append({"role": "user", "content": f"Tool result:\n{tool_content}"})
+                contents.append(gtypes.Content(
+                    role="user",
+                    parts=[gtypes.Part(text=f"Tool result:\n{tool_content}")],
+                ))
 
         # Fallback if loop exhausted without final answer
         return self._extractive_answer(question, doc_id, max_sources)
@@ -459,10 +459,10 @@ class QueryAgent:
             path = Path(rules_path)
             if path.exists():
                 data = yaml.safe_load(path.read_text()) or {}
-                return data.get("query", {}).get("model", "google/gemini-flash-1.5")
+                return data.get("query", {}).get("model", "gemini-2.0-flash")
         except Exception:
             pass
-        return "google/gemini-flash-1.5"
+        return "gemini-2.0-flash"
 
     def _load_fact_table(self):
         """Lazy-load FactTable if the DB exists."""
