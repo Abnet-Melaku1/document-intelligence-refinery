@@ -1,0 +1,648 @@
+{
+  "doc_id": "7c4e1a8f2d9b3076",
+  "filename": "Annual_Report_JUNE-2023.pdf",
+  "page_count": 96,
+  "nodes": {
+    "7c4e1a8f2d9b3076-node-0000": {
+      "node_id": "7c4e1a8f2d9b3076-node-0000",
+      "title": "Chairman Statement",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 6,
+      "summary": "This section covers Chairman Statement with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000010",
+        "7c4e1a8f2d9b3076-chunk-000011",
+        "7c4e1a8f2d9b3076-chunk-000012",
+        "7c4e1a8f2d9b3076-chunk-000013"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0001": {
+      "node_id": "7c4e1a8f2d9b3076-node-0001",
+      "title": "Strategic Overview",
+      "level": 1,
+      "page_start": 7,
+      "page_end": 20,
+      "summary": "This section covers Strategic Overview with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000070",
+        "7c4e1a8f2d9b3076-chunk-000071",
+        "7c4e1a8f2d9b3076-chunk-000072",
+        "7c4e1a8f2d9b3076-chunk-000073"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "7c4e1a8f2d9b3076-node-0002",
+        "7c4e1a8f2d9b3076-node-0003"
+      ]
+    },
+    "7c4e1a8f2d9b3076-node-0002": {
+      "node_id": "7c4e1a8f2d9b3076-node-0002",
+      "title": "Mission and Vision",
+      "level": 2,
+      "page_start": 7,
+      "page_end": 10,
+      "summary": "This section covers Mission and Vision with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000070",
+        "7c4e1a8f2d9b3076-chunk-000071",
+        "7c4e1a8f2d9b3076-chunk-000072",
+        "7c4e1a8f2d9b3076-chunk-000073"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0001",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0003": {
+      "node_id": "7c4e1a8f2d9b3076-node-0003",
+      "title": "Strategic Pillars",
+      "level": 2,
+      "page_start": 11,
+      "page_end": 20,
+      "summary": "This section covers Strategic Pillars with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000110",
+        "7c4e1a8f2d9b3076-chunk-000111",
+        "7c4e1a8f2d9b3076-chunk-000112",
+        "7c4e1a8f2d9b3076-chunk-000113"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0001",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0004": {
+      "node_id": "7c4e1a8f2d9b3076-node-0004",
+      "title": "Operational Review",
+      "level": 1,
+      "page_start": 21,
+      "page_end": 50,
+      "summary": "This section covers Operational Review with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000210",
+        "7c4e1a8f2d9b3076-chunk-000211",
+        "7c4e1a8f2d9b3076-chunk-000212",
+        "7c4e1a8f2d9b3076-chunk-000213"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "7c4e1a8f2d9b3076-node-0005",
+        "7c4e1a8f2d9b3076-node-0006",
+        "7c4e1a8f2d9b3076-node-0007"
+      ]
+    },
+    "7c4e1a8f2d9b3076-node-0005": {
+      "node_id": "7c4e1a8f2d9b3076-node-0005",
+      "title": "Branch Network Expansion",
+      "level": 2,
+      "page_start": 22,
+      "page_end": 30,
+      "summary": "This section covers Branch Network Expansion with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000220",
+        "7c4e1a8f2d9b3076-chunk-000221",
+        "7c4e1a8f2d9b3076-chunk-000222",
+        "7c4e1a8f2d9b3076-chunk-000223"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0004",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0006": {
+      "node_id": "7c4e1a8f2d9b3076-node-0006",
+      "title": "Technology Investments",
+      "level": 2,
+      "page_start": 31,
+      "page_end": 40,
+      "summary": "This section covers Technology Investments with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000310",
+        "7c4e1a8f2d9b3076-chunk-000311",
+        "7c4e1a8f2d9b3076-chunk-000312",
+        "7c4e1a8f2d9b3076-chunk-000313"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0004",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0007": {
+      "node_id": "7c4e1a8f2d9b3076-node-0007",
+      "title": "Human Capital",
+      "level": 2,
+      "page_start": 41,
+      "page_end": 50,
+      "summary": "This section covers Human Capital with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000410",
+        "7c4e1a8f2d9b3076-chunk-000411",
+        "7c4e1a8f2d9b3076-chunk-000412",
+        "7c4e1a8f2d9b3076-chunk-000413"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0004",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0008": {
+      "node_id": "7c4e1a8f2d9b3076-node-0008",
+      "title": "Financial Review",
+      "level": 1,
+      "page_start": 51,
+      "page_end": 80,
+      "summary": "This section covers Financial Review with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000510",
+        "7c4e1a8f2d9b3076-chunk-000511",
+        "7c4e1a8f2d9b3076-chunk-000512",
+        "7c4e1a8f2d9b3076-chunk-000513"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "7c4e1a8f2d9b3076-node-0009",
+        "7c4e1a8f2d9b3076-node-0010",
+        "7c4e1a8f2d9b3076-node-0011"
+      ]
+    },
+    "7c4e1a8f2d9b3076-node-0009": {
+      "node_id": "7c4e1a8f2d9b3076-node-0009",
+      "title": "Revenue Analysis",
+      "level": 2,
+      "page_start": 52,
+      "page_end": 62,
+      "summary": "This section covers Revenue Analysis with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000520",
+        "7c4e1a8f2d9b3076-chunk-000521",
+        "7c4e1a8f2d9b3076-chunk-000522",
+        "7c4e1a8f2d9b3076-chunk-000523"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0008",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0010": {
+      "node_id": "7c4e1a8f2d9b3076-node-0010",
+      "title": "Expense Management",
+      "level": 2,
+      "page_start": 63,
+      "page_end": 72,
+      "summary": "This section covers Expense Management with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000630",
+        "7c4e1a8f2d9b3076-chunk-000631",
+        "7c4e1a8f2d9b3076-chunk-000632",
+        "7c4e1a8f2d9b3076-chunk-000633"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0008",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0011": {
+      "node_id": "7c4e1a8f2d9b3076-node-0011",
+      "title": "Profit and Loss Summary",
+      "level": 2,
+      "page_start": 73,
+      "page_end": 80,
+      "summary": "This section covers Profit and Loss Summary with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000730",
+        "7c4e1a8f2d9b3076-chunk-000731",
+        "7c4e1a8f2d9b3076-chunk-000732",
+        "7c4e1a8f2d9b3076-chunk-000733"
+      ],
+      "parent_node_id": "7c4e1a8f2d9b3076-node-0008",
+      "child_node_ids": []
+    },
+    "7c4e1a8f2d9b3076-node-0012": {
+      "node_id": "7c4e1a8f2d9b3076-node-0012",
+      "title": "Audited Financial Statements",
+      "level": 1,
+      "page_start": 81,
+      "page_end": 96,
+      "summary": "The audited financial statements present the entity's financial position, performance, and cash flows prepared in accordance with IFRS and applicable regulations.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "7c4e1a8f2d9b3076-chunk-000810",
+        "7c4e1a8f2d9b3076-chunk-000811",
+        "7c4e1a8f2d9b3076-chunk-000812",
+        "7c4e1a8f2d9b3076-chunk-000813"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    }
+  },
+  "root_node_ids": [
+    "7c4e1a8f2d9b3076-node-0000",
+    "7c4e1a8f2d9b3076-node-0001",
+    "7c4e1a8f2d9b3076-node-0004",
+    "7c4e1a8f2d9b3076-node-0008",
+    "7c4e1a8f2d9b3076-node-0012"
+  ],
+  "page_to_nodes": {
+    "1": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "2": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "3": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "4": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "5": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "6": [
+      "7c4e1a8f2d9b3076-node-0000"
+    ],
+    "7": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0002"
+    ],
+    "8": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0002"
+    ],
+    "9": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0002"
+    ],
+    "10": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0002"
+    ],
+    "11": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "12": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "13": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "14": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "15": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "16": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "17": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "18": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "19": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "20": [
+      "7c4e1a8f2d9b3076-node-0001",
+      "7c4e1a8f2d9b3076-node-0003"
+    ],
+    "21": [
+      "7c4e1a8f2d9b3076-node-0004"
+    ],
+    "22": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "23": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "24": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "25": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "26": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "27": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "28": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "29": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "30": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0005"
+    ],
+    "31": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "32": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "33": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "34": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "35": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "36": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "37": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "38": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "39": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "40": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0006"
+    ],
+    "41": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "42": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "43": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "44": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "45": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "46": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "47": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "48": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "49": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "50": [
+      "7c4e1a8f2d9b3076-node-0004",
+      "7c4e1a8f2d9b3076-node-0007"
+    ],
+    "51": [
+      "7c4e1a8f2d9b3076-node-0008"
+    ],
+    "52": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "53": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "54": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "55": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "56": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "57": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "58": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "59": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "60": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "61": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "62": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0009"
+    ],
+    "63": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "64": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "65": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "66": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "67": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "68": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "69": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "70": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "71": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "72": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0010"
+    ],
+    "73": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "74": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "75": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "76": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "77": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "78": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "79": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "80": [
+      "7c4e1a8f2d9b3076-node-0008",
+      "7c4e1a8f2d9b3076-node-0011"
+    ],
+    "81": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "82": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "83": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "84": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "85": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "86": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "87": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "88": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "89": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "90": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "91": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "92": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "93": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "94": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "95": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ],
+    "96": [
+      "7c4e1a8f2d9b3076-node-0012"
+    ]
+  },
+  "index_version": "1.0.0"
+}

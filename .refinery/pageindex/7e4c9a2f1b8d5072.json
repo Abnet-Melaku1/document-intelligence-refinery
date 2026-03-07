@@ -1,0 +1,472 @@
+{
+  "doc_id": "7e4c9a2f1b8d5072",
+  "filename": "tax_expenditure_ethiopia_2021_22.pdf",
+  "page_count": 64,
+  "nodes": {
+    "7e4c9a2f1b8d5072-node-0000": {
+      "node_id": "7e4c9a2f1b8d5072-node-0000",
+      "title": "Introduction",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 8,
+      "summary": "This section covers Introduction with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000010",
+        "7e4c9a2f1b8d5072-chunk-000011",
+        "7e4c9a2f1b8d5072-chunk-000012",
+        "7e4c9a2f1b8d5072-chunk-000013"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0001": {
+      "node_id": "7e4c9a2f1b8d5072-node-0001",
+      "title": "Tax Expenditure Estimates",
+      "level": 1,
+      "page_start": 9,
+      "page_end": 32,
+      "summary": "Tax expenditures totalling several billion ETB represent revenue foregone through exemptions, reduced rates, and deferrals granted to priority sectors.",
+      "key_entities": [
+        "ETB",
+        "ERCA",
+        "MoF",
+        "FY2021/22"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000090",
+        "7e4c9a2f1b8d5072-chunk-000091",
+        "7e4c9a2f1b8d5072-chunk-000092",
+        "7e4c9a2f1b8d5072-chunk-000093"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "7e4c9a2f1b8d5072-node-0002",
+        "7e4c9a2f1b8d5072-node-0003",
+        "7e4c9a2f1b8d5072-node-0004"
+      ]
+    },
+    "7e4c9a2f1b8d5072-node-0002": {
+      "node_id": "7e4c9a2f1b8d5072-node-0002",
+      "title": "Income Tax Exemptions",
+      "level": 2,
+      "page_start": 10,
+      "page_end": 18,
+      "summary": "This section covers Income Tax Exemptions with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000100",
+        "7e4c9a2f1b8d5072-chunk-000101",
+        "7e4c9a2f1b8d5072-chunk-000102",
+        "7e4c9a2f1b8d5072-chunk-000103"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0001",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0003": {
+      "node_id": "7e4c9a2f1b8d5072-node-0003",
+      "title": "VAT Exemptions",
+      "level": 2,
+      "page_start": 19,
+      "page_end": 26,
+      "summary": "This section covers VAT Exemptions with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000190",
+        "7e4c9a2f1b8d5072-chunk-000191",
+        "7e4c9a2f1b8d5072-chunk-000192",
+        "7e4c9a2f1b8d5072-chunk-000193"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0001",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0004": {
+      "node_id": "7e4c9a2f1b8d5072-node-0004",
+      "title": "Customs Duty Waivers",
+      "level": 2,
+      "page_start": 27,
+      "page_end": 32,
+      "summary": "This section covers Customs Duty Waivers with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000270",
+        "7e4c9a2f1b8d5072-chunk-000271",
+        "7e4c9a2f1b8d5072-chunk-000272",
+        "7e4c9a2f1b8d5072-chunk-000273"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0001",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0005": {
+      "node_id": "7e4c9a2f1b8d5072-node-0005",
+      "title": "Sectoral Analysis",
+      "level": 1,
+      "page_start": 33,
+      "page_end": 50,
+      "summary": "This section covers Sectoral Analysis with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000330",
+        "7e4c9a2f1b8d5072-chunk-000331",
+        "7e4c9a2f1b8d5072-chunk-000332",
+        "7e4c9a2f1b8d5072-chunk-000333"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "7e4c9a2f1b8d5072-node-0006",
+        "7e4c9a2f1b8d5072-node-0007",
+        "7e4c9a2f1b8d5072-node-0008"
+      ]
+    },
+    "7e4c9a2f1b8d5072-node-0006": {
+      "node_id": "7e4c9a2f1b8d5072-node-0006",
+      "title": "Manufacturing Sector",
+      "level": 2,
+      "page_start": 34,
+      "page_end": 40,
+      "summary": "This section covers Manufacturing Sector with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000340",
+        "7e4c9a2f1b8d5072-chunk-000341",
+        "7e4c9a2f1b8d5072-chunk-000342",
+        "7e4c9a2f1b8d5072-chunk-000343"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0005",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0007": {
+      "node_id": "7e4c9a2f1b8d5072-node-0007",
+      "title": "Agriculture Sector",
+      "level": 2,
+      "page_start": 41,
+      "page_end": 46,
+      "summary": "This section covers Agriculture Sector with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000410",
+        "7e4c9a2f1b8d5072-chunk-000411",
+        "7e4c9a2f1b8d5072-chunk-000412",
+        "7e4c9a2f1b8d5072-chunk-000413"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0005",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0008": {
+      "node_id": "7e4c9a2f1b8d5072-node-0008",
+      "title": "Financial Sector",
+      "level": 2,
+      "page_start": 47,
+      "page_end": 50,
+      "summary": "This section covers Financial Sector with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000470",
+        "7e4c9a2f1b8d5072-chunk-000471",
+        "7e4c9a2f1b8d5072-chunk-000472",
+        "7e4c9a2f1b8d5072-chunk-000473"
+      ],
+      "parent_node_id": "7e4c9a2f1b8d5072-node-0005",
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0009": {
+      "node_id": "7e4c9a2f1b8d5072-node-0009",
+      "title": "Revenue Foregone Summary",
+      "level": 1,
+      "page_start": 51,
+      "page_end": 58,
+      "summary": "This section covers Revenue Foregone Summary with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000510",
+        "7e4c9a2f1b8d5072-chunk-000511",
+        "7e4c9a2f1b8d5072-chunk-000512",
+        "7e4c9a2f1b8d5072-chunk-000513"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    },
+    "7e4c9a2f1b8d5072-node-0010": {
+      "node_id": "7e4c9a2f1b8d5072-node-0010",
+      "title": "Policy Implications",
+      "level": 1,
+      "page_start": 59,
+      "page_end": 64,
+      "summary": "This section covers Policy Implications with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "7e4c9a2f1b8d5072-chunk-000590",
+        "7e4c9a2f1b8d5072-chunk-000591",
+        "7e4c9a2f1b8d5072-chunk-000592",
+        "7e4c9a2f1b8d5072-chunk-000593"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    }
+  },
+  "root_node_ids": [
+    "7e4c9a2f1b8d5072-node-0000",
+    "7e4c9a2f1b8d5072-node-0001",
+    "7e4c9a2f1b8d5072-node-0005",
+    "7e4c9a2f1b8d5072-node-0009",
+    "7e4c9a2f1b8d5072-node-0010"
+  ],
+  "page_to_nodes": {
+    "1": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "2": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "3": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "4": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "5": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "6": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "7": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "8": [
+      "7e4c9a2f1b8d5072-node-0000"
+    ],
+    "9": [
+      "7e4c9a2f1b8d5072-node-0001"
+    ],
+    "10": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "11": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "12": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "13": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "14": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "15": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "16": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "17": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "18": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0002"
+    ],
+    "19": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "20": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "21": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "22": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "23": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "24": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "25": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "26": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0003"
+    ],
+    "27": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "28": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "29": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "30": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "31": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "32": [
+      "7e4c9a2f1b8d5072-node-0001",
+      "7e4c9a2f1b8d5072-node-0004"
+    ],
+    "33": [
+      "7e4c9a2f1b8d5072-node-0005"
+    ],
+    "34": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "35": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "36": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "37": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "38": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "39": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "40": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0006"
+    ],
+    "41": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "42": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "43": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "44": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "45": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "46": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0007"
+    ],
+    "47": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0008"
+    ],
+    "48": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0008"
+    ],
+    "49": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0008"
+    ],
+    "50": [
+      "7e4c9a2f1b8d5072-node-0005",
+      "7e4c9a2f1b8d5072-node-0008"
+    ],
+    "51": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "52": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "53": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "54": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "55": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "56": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "57": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "58": [
+      "7e4c9a2f1b8d5072-node-0009"
+    ],
+    "59": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ],
+    "60": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ],
+    "61": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ],
+    "62": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ],
+    "63": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ],
+    "64": [
+      "7e4c9a2f1b8d5072-node-0010"
+    ]
+  },
+  "index_version": "1.0.0"
+}

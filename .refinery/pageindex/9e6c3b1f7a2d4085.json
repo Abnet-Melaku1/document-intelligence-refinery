@@ -1,0 +1,617 @@
+{
+  "doc_id": "9e6c3b1f7a2d4085",
+  "filename": "Audit Report - 2023.pdf",
+  "page_count": 84,
+  "nodes": {
+    "9e6c3b1f7a2d4085-node-0000": {
+      "node_id": "9e6c3b1f7a2d4085-node-0000",
+      "title": "Independent Auditors Report",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 12,
+      "summary": "The independent auditors express an unqualified opinion, confirming the financial statements present a true and fair view of the entity's financial position.",
+      "key_entities": [
+        "IFRS 9",
+        "2023",
+        "NBE",
+        "Ethiopia"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000010",
+        "9e6c3b1f7a2d4085-chunk-000011",
+        "9e6c3b1f7a2d4085-chunk-000012",
+        "9e6c3b1f7a2d4085-chunk-000013"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "9e6c3b1f7a2d4085-node-0001",
+        "9e6c3b1f7a2d4085-node-0002"
+      ]
+    },
+    "9e6c3b1f7a2d4085-node-0001": {
+      "node_id": "9e6c3b1f7a2d4085-node-0001",
+      "title": "Basis for Opinion",
+      "level": 2,
+      "page_start": 3,
+      "page_end": 6,
+      "summary": "This section covers Basis for Opinion with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000030",
+        "9e6c3b1f7a2d4085-chunk-000031",
+        "9e6c3b1f7a2d4085-chunk-000032",
+        "9e6c3b1f7a2d4085-chunk-000033"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0000",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0002": {
+      "node_id": "9e6c3b1f7a2d4085-node-0002",
+      "title": "Key Audit Matters",
+      "level": 2,
+      "page_start": 7,
+      "page_end": 12,
+      "summary": "This section covers Key Audit Matters with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "IFRS 9",
+        "2023",
+        "NBE",
+        "Ethiopia"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000070",
+        "9e6c3b1f7a2d4085-chunk-000071",
+        "9e6c3b1f7a2d4085-chunk-000072",
+        "9e6c3b1f7a2d4085-chunk-000073"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0000",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0003": {
+      "node_id": "9e6c3b1f7a2d4085-node-0003",
+      "title": "Financial Statements",
+      "level": 1,
+      "page_start": 13,
+      "page_end": 60,
+      "summary": "The audited financial statements present the entity's financial position, performance, and cash flows prepared in accordance with IFRS and applicable regulations.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000130",
+        "9e6c3b1f7a2d4085-chunk-000131",
+        "9e6c3b1f7a2d4085-chunk-000132",
+        "9e6c3b1f7a2d4085-chunk-000133"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "9e6c3b1f7a2d4085-node-0004",
+        "9e6c3b1f7a2d4085-node-0005",
+        "9e6c3b1f7a2d4085-node-0006",
+        "9e6c3b1f7a2d4085-node-0007"
+      ]
+    },
+    "9e6c3b1f7a2d4085-node-0004": {
+      "node_id": "9e6c3b1f7a2d4085-node-0004",
+      "title": "Statement of Financial Position",
+      "level": 2,
+      "page_start": 13,
+      "page_end": 18,
+      "summary": "This section covers Statement of Financial Position with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000130",
+        "9e6c3b1f7a2d4085-chunk-000131",
+        "9e6c3b1f7a2d4085-chunk-000132",
+        "9e6c3b1f7a2d4085-chunk-000133"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0003",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0005": {
+      "node_id": "9e6c3b1f7a2d4085-node-0005",
+      "title": "Statement of Profit or Loss",
+      "level": 2,
+      "page_start": 19,
+      "page_end": 24,
+      "summary": "This section covers Statement of Profit or Loss with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000190",
+        "9e6c3b1f7a2d4085-chunk-000191",
+        "9e6c3b1f7a2d4085-chunk-000192",
+        "9e6c3b1f7a2d4085-chunk-000193"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0003",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0006": {
+      "node_id": "9e6c3b1f7a2d4085-node-0006",
+      "title": "Statement of Cash Flows",
+      "level": 2,
+      "page_start": 25,
+      "page_end": 30,
+      "summary": "This section covers Statement of Cash Flows with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000250",
+        "9e6c3b1f7a2d4085-chunk-000251",
+        "9e6c3b1f7a2d4085-chunk-000252",
+        "9e6c3b1f7a2d4085-chunk-000253"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0003",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0007": {
+      "node_id": "9e6c3b1f7a2d4085-node-0007",
+      "title": "Notes to Financial Statements",
+      "level": 2,
+      "page_start": 37,
+      "page_end": 60,
+      "summary": "The audited financial statements present the entity's financial position, performance, and cash flows prepared in accordance with IFRS and applicable regulations.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000370",
+        "9e6c3b1f7a2d4085-chunk-000371",
+        "9e6c3b1f7a2d4085-chunk-000372",
+        "9e6c3b1f7a2d4085-chunk-000373"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0003",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0008": {
+      "node_id": "9e6c3b1f7a2d4085-node-0008",
+      "title": "Supplementary Schedules",
+      "level": 1,
+      "page_start": 61,
+      "page_end": 84,
+      "summary": "This section covers Supplementary Schedules with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [
+        "tables"
+      ],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000610",
+        "9e6c3b1f7a2d4085-chunk-000611",
+        "9e6c3b1f7a2d4085-chunk-000612",
+        "9e6c3b1f7a2d4085-chunk-000613"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "9e6c3b1f7a2d4085-node-0009",
+        "9e6c3b1f7a2d4085-node-0010",
+        "9e6c3b1f7a2d4085-node-0011"
+      ]
+    },
+    "9e6c3b1f7a2d4085-node-0009": {
+      "node_id": "9e6c3b1f7a2d4085-node-0009",
+      "title": "Loan Portfolio Analysis",
+      "level": 2,
+      "page_start": 62,
+      "page_end": 70,
+      "summary": "This section covers Loan Portfolio Analysis with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000620",
+        "9e6c3b1f7a2d4085-chunk-000621",
+        "9e6c3b1f7a2d4085-chunk-000622",
+        "9e6c3b1f7a2d4085-chunk-000623"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0008",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0010": {
+      "node_id": "9e6c3b1f7a2d4085-node-0010",
+      "title": "Deposit Structure",
+      "level": 2,
+      "page_start": 71,
+      "page_end": 76,
+      "summary": "This section covers Deposit Structure with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000710",
+        "9e6c3b1f7a2d4085-chunk-000711",
+        "9e6c3b1f7a2d4085-chunk-000712",
+        "9e6c3b1f7a2d4085-chunk-000713"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0008",
+      "child_node_ids": []
+    },
+    "9e6c3b1f7a2d4085-node-0011": {
+      "node_id": "9e6c3b1f7a2d4085-node-0011",
+      "title": "Regulatory Capital Ratios",
+      "level": 2,
+      "page_start": 77,
+      "page_end": 84,
+      "summary": "This section covers Regulatory Capital Ratios with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [
+        "ETB",
+        "FY2023/24",
+        "IFRS",
+        "NBE"
+      ],
+      "data_types_present": [],
+      "chunk_ids": [
+        "9e6c3b1f7a2d4085-chunk-000770",
+        "9e6c3b1f7a2d4085-chunk-000771",
+        "9e6c3b1f7a2d4085-chunk-000772",
+        "9e6c3b1f7a2d4085-chunk-000773"
+      ],
+      "parent_node_id": "9e6c3b1f7a2d4085-node-0008",
+      "child_node_ids": []
+    }
+  },
+  "root_node_ids": [
+    "9e6c3b1f7a2d4085-node-0000",
+    "9e6c3b1f7a2d4085-node-0003",
+    "9e6c3b1f7a2d4085-node-0008"
+  ],
+  "page_to_nodes": {
+    "1": [
+      "9e6c3b1f7a2d4085-node-0000"
+    ],
+    "2": [
+      "9e6c3b1f7a2d4085-node-0000"
+    ],
+    "3": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0001"
+    ],
+    "4": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0001"
+    ],
+    "5": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0001"
+    ],
+    "6": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0001"
+    ],
+    "7": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "8": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "9": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "10": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "11": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "12": [
+      "9e6c3b1f7a2d4085-node-0000",
+      "9e6c3b1f7a2d4085-node-0002"
+    ],
+    "13": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "14": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "15": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "16": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "17": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "18": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0004"
+    ],
+    "19": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "20": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "21": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "22": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "23": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "24": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0005"
+    ],
+    "25": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "26": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "27": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "28": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "29": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "30": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0006"
+    ],
+    "31": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "32": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "33": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "34": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "35": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "36": [
+      "9e6c3b1f7a2d4085-node-0003"
+    ],
+    "37": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "38": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "39": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "40": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "41": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "42": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "43": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "44": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "45": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "46": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "47": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "48": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "49": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "50": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "51": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "52": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "53": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "54": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "55": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "56": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "57": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "58": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "59": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "60": [
+      "9e6c3b1f7a2d4085-node-0003",
+      "9e6c3b1f7a2d4085-node-0007"
+    ],
+    "61": [
+      "9e6c3b1f7a2d4085-node-0008"
+    ],
+    "62": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "63": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "64": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "65": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "66": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "67": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "68": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "69": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "70": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0009"
+    ],
+    "71": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "72": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "73": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "74": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "75": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "76": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0010"
+    ],
+    "77": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "78": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "79": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "80": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "81": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "82": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "83": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ],
+    "84": [
+      "9e6c3b1f7a2d4085-node-0008",
+      "9e6c3b1f7a2d4085-node-0011"
+    ]
+  },
+  "index_version": "1.0.0"
+}

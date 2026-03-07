@@ -1,0 +1,248 @@
+{
+  "doc_id": "1b9f5c2e8d4a7063",
+  "filename": "Security_Vulnerability_Disclosure_Standard_Procedure.pdf",
+  "page_count": 24,
+  "nodes": {
+    "1b9f5c2e8d4a7063-node-0000": {
+      "node_id": "1b9f5c2e8d4a7063-node-0000",
+      "title": "Purpose and Scope",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 4,
+      "summary": "This section covers Purpose and Scope with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000010",
+        "1b9f5c2e8d4a7063-chunk-000011",
+        "1b9f5c2e8d4a7063-chunk-000012",
+        "1b9f5c2e8d4a7063-chunk-000013"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    },
+    "1b9f5c2e8d4a7063-node-0001": {
+      "node_id": "1b9f5c2e8d4a7063-node-0001",
+      "title": "Vulnerability Classification",
+      "level": 1,
+      "page_start": 5,
+      "page_end": 10,
+      "summary": "This section defines the procedure for responsible disclosure of security vulnerabilities, specifying timelines, communication channels, and escalation paths.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000050",
+        "1b9f5c2e8d4a7063-chunk-000051",
+        "1b9f5c2e8d4a7063-chunk-000052",
+        "1b9f5c2e8d4a7063-chunk-000053"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "1b9f5c2e8d4a7063-node-0002",
+        "1b9f5c2e8d4a7063-node-0003"
+      ]
+    },
+    "1b9f5c2e8d4a7063-node-0002": {
+      "node_id": "1b9f5c2e8d4a7063-node-0002",
+      "title": "Severity Levels",
+      "level": 2,
+      "page_start": 5,
+      "page_end": 8,
+      "summary": "This section covers Severity Levels with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000050",
+        "1b9f5c2e8d4a7063-chunk-000051",
+        "1b9f5c2e8d4a7063-chunk-000052",
+        "1b9f5c2e8d4a7063-chunk-000053"
+      ],
+      "parent_node_id": "1b9f5c2e8d4a7063-node-0001",
+      "child_node_ids": []
+    },
+    "1b9f5c2e8d4a7063-node-0003": {
+      "node_id": "1b9f5c2e8d4a7063-node-0003",
+      "title": "CVSS Scoring",
+      "level": 2,
+      "page_start": 9,
+      "page_end": 10,
+      "summary": "This section covers CVSS Scoring with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000090",
+        "1b9f5c2e8d4a7063-chunk-000091"
+      ],
+      "parent_node_id": "1b9f5c2e8d4a7063-node-0001",
+      "child_node_ids": []
+    },
+    "1b9f5c2e8d4a7063-node-0004": {
+      "node_id": "1b9f5c2e8d4a7063-node-0004",
+      "title": "Disclosure Procedure",
+      "level": 1,
+      "page_start": 11,
+      "page_end": 18,
+      "summary": "This section covers Disclosure Procedure with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000110",
+        "1b9f5c2e8d4a7063-chunk-000111",
+        "1b9f5c2e8d4a7063-chunk-000112",
+        "1b9f5c2e8d4a7063-chunk-000113"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "1b9f5c2e8d4a7063-node-0005",
+        "1b9f5c2e8d4a7063-node-0006"
+      ]
+    },
+    "1b9f5c2e8d4a7063-node-0005": {
+      "node_id": "1b9f5c2e8d4a7063-node-0005",
+      "title": "Reporting Channels",
+      "level": 2,
+      "page_start": 12,
+      "page_end": 14,
+      "summary": "This section covers Reporting Channels with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000120",
+        "1b9f5c2e8d4a7063-chunk-000121",
+        "1b9f5c2e8d4a7063-chunk-000122"
+      ],
+      "parent_node_id": "1b9f5c2e8d4a7063-node-0004",
+      "child_node_ids": []
+    },
+    "1b9f5c2e8d4a7063-node-0006": {
+      "node_id": "1b9f5c2e8d4a7063-node-0006",
+      "title": "Response Timeline",
+      "level": 2,
+      "page_start": 15,
+      "page_end": 18,
+      "summary": "This section covers Response Timeline with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000150",
+        "1b9f5c2e8d4a7063-chunk-000151",
+        "1b9f5c2e8d4a7063-chunk-000152",
+        "1b9f5c2e8d4a7063-chunk-000153"
+      ],
+      "parent_node_id": "1b9f5c2e8d4a7063-node-0004",
+      "child_node_ids": []
+    },
+    "1b9f5c2e8d4a7063-node-0007": {
+      "node_id": "1b9f5c2e8d4a7063-node-0007",
+      "title": "Roles and Responsibilities",
+      "level": 1,
+      "page_start": 19,
+      "page_end": 24,
+      "summary": "This section covers Roles and Responsibilities with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "1b9f5c2e8d4a7063-chunk-000190",
+        "1b9f5c2e8d4a7063-chunk-000191",
+        "1b9f5c2e8d4a7063-chunk-000192",
+        "1b9f5c2e8d4a7063-chunk-000193"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    }
+  },
+  "root_node_ids": [
+    "1b9f5c2e8d4a7063-node-0000",
+    "1b9f5c2e8d4a7063-node-0001",
+    "1b9f5c2e8d4a7063-node-0004",
+    "1b9f5c2e8d4a7063-node-0007"
+  ],
+  "page_to_nodes": {
+    "1": [
+      "1b9f5c2e8d4a7063-node-0000"
+    ],
+    "2": [
+      "1b9f5c2e8d4a7063-node-0000"
+    ],
+    "3": [
+      "1b9f5c2e8d4a7063-node-0000"
+    ],
+    "4": [
+      "1b9f5c2e8d4a7063-node-0000"
+    ],
+    "5": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0002"
+    ],
+    "6": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0002"
+    ],
+    "7": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0002"
+    ],
+    "8": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0002"
+    ],
+    "9": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0003"
+    ],
+    "10": [
+      "1b9f5c2e8d4a7063-node-0001",
+      "1b9f5c2e8d4a7063-node-0003"
+    ],
+    "11": [
+      "1b9f5c2e8d4a7063-node-0004"
+    ],
+    "12": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0005"
+    ],
+    "13": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0005"
+    ],
+    "14": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0005"
+    ],
+    "15": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0006"
+    ],
+    "16": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0006"
+    ],
+    "17": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0006"
+    ],
+    "18": [
+      "1b9f5c2e8d4a7063-node-0004",
+      "1b9f5c2e8d4a7063-node-0006"
+    ],
+    "19": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ],
+    "20": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ],
+    "21": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ],
+    "22": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ],
+    "23": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ],
+    "24": [
+      "1b9f5c2e8d4a7063-node-0007"
+    ]
+  },
+  "index_version": "1.0.0"
+}

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "qa-001",
+    "doc_id": "3f8a2c1d9e4b7051",
+    "source_file": "CBE ANNUAL REPORT 2023-24.pdf",
+    "question": "What was CBE's total asset base at the end of FY2023/24?",
+    "expected_answer_contains": ["total assets", "billion", "ETB"],
+    "retrieval_method": "semantic_search",
+    "target_section": "Financial Performance",
+    "target_pages": [33, 80],
+    "provenance": {
+      "chunk_id": "3f8a2c1d9e4b7051-chunk-000340",
+      "page_number": 34,
+      "section_title": "Income Statement Analysis",
+      "retrieval_method": "semantic_search",
+      "content_hash_prefix": "sha256:a3f2..."
+    }
+  },
+  {
+    "id": "qa-002",
+    "doc_id": "3f8a2c1d9e4b7051",
+    "source_file": "CBE ANNUAL REPORT 2023-24.pdf",
+    "question": "What is CBE's capital adequacy ratio for 2024?",
+    "expected_answer_contains": ["capital adequacy", "%", "ratio"],
+    "retrieval_method": "semantic_search",
+    "target_section": "Capital Adequacy",
+    "target_pages": [63, 72],
+    "provenance": {
+      "chunk_id": "3f8a2c1d9e4b7051-chunk-000630",
+      "page_number": 65,
+      "section_title": "Capital Adequacy",
+      "retrieval_method": "semantic_search",
+      "content_hash_prefix": "sha256:b1c4..."
+    }
+  },
+  {
+    "id": "qa-003",
+    "doc_id": "7c4e1a8f2d9b3076",
+    "source_file": "Annual_Report_JUNE-2023.pdf",
+    "question": "How many branches did the bank operate as of June 2023?",
+    "expected_answer_contains": ["branch", "network"],
+    "retrieval_method": "navigate_index",
+    "target_section": "Branch Network Expansion",
+    "target_pages": [22, 30],
+    "provenance": {
+      "chunk_id": "7c4e1a8f2d9b3076-chunk-000220",
+      "page_number": 24,
+      "section_title": "Branch Network Expansion",
+      "retrieval_method": "pageindex_navigate",
+      "content_hash_prefix": "sha256:c8d2..."
+    }
+  },
+  {
+    "id": "qa-004",
+    "doc_id": "5b2d7f9e1a4c8032",
+    "source_file": "EthSwitch-10th-Annual-Report-202324.pdf",
+    "question": "What was the total value of transactions processed by EthSwitch in FY2023/24?",
+    "expected_answer_contains": ["transaction", "ETB", "billion"],
+    "retrieval_method": "query_facts",
+    "target_section": "Transaction Volume and Value",
+    "target_pages": [22, 30],
+    "provenance": {
+      "chunk_id": "5b2d7f9e1a4c8032-chunk-000220",
+      "page_number": 25,
+      "section_title": "Transaction Volume and Value",
+      "retrieval_method": "structured_query",
+      "content_hash_prefix": "sha256:d9e1..."
+    }
+  },
+  {
+    "id": "qa-005",
+    "doc_id": "9e6c3b1f7a2d4085",
+    "source_file": "Audit Report - 2023.pdf",
+    "question": "What were the key audit matters identified by the auditors in 2023?",
+    "expected_answer_contains": ["key audit", "matters"],
+    "retrieval_method": "navigate_index",
+    "target_section": "Key Audit Matters",
+    "target_pages": [7, 12],
+    "provenance": {
+      "chunk_id": "9e6c3b1f7a2d4085-chunk-000070",
+      "page_number": 8,
+      "section_title": "Key Audit Matters",
+      "retrieval_method": "pageindex_navigate",
+      "content_hash_prefix": "sha256:e2f3..."
+    }
+  },
+  {
+    "id": "qa-006",
+    "doc_id": "2a7d5f8c4e1b9043",
+    "source_file": "2022_Audited_Financial_Statement_Report.pdf",
+    "question": "What accounting standard was used for loan classification in 2022?",
+    "expected_answer_contains": ["IFRS 9", "ECL", "loan"],
+    "retrieval_method": "semantic_search",
+    "target_section": "Significant Accounting Policies",
+    "target_pages": [33, 42],
+    "provenance": {
+      "chunk_id": "2a7d5f8c4e1b9043-chunk-000330",
+      "page_number": 36,
+      "section_title": "Significant Accounting Policies",
+      "retrieval_method": "semantic_search",
+      "content_hash_prefix": "sha256:f4a5..."
+    }
+  },
+  {
+    "id": "qa-007",
+    "doc_id": "4d8b2e5f9a1c7036",
+    "source_file": "fta_performance_survey_final_report_2022.pdf",
+    "question": "What was the overall FTA institutional capacity score?",
+    "expected_answer_contains": ["capacity", "score", "institutional"],
+    "retrieval_method": "semantic_search",
+    "target_section": "Institutional Capacity",
+    "target_pages": [26, 36],
+    "provenance": {
+      "chunk_id": "4d8b2e5f9a1c7036-chunk-000260",
+      "page_number": 28,
+      "section_title": "Institutional Capacity",
+      "retrieval_method": "semantic_search",
+      "content_hash_prefix": "sha256:a5b6..."
+    }
+  },
+  {
+    "id": "qa-008",
+    "doc_id": "7e4c9a2f1b8d5072",
+    "source_file": "tax_expenditure_ethiopia_2021_22.pdf",
+    "question": "What was the total revenue foregone from VAT exemptions in FY2021/22?",
+    "expected_answer_contains": ["VAT", "exemption", "billion", "ETB"],
+    "retrieval_method": "query_facts",
+    "target_section": "VAT Exemptions",
+    "target_pages": [19, 26],
+    "provenance": {
+      "chunk_id": "7e4c9a2f1b8d5072-chunk-000190",
+      "page_number": 22,
+      "section_title": "VAT Exemptions",
+      "retrieval_method": "structured_query",
+      "content_hash_prefix": "sha256:b6c7..."
+    }
+  },
+  {
+    "id": "qa-009",
+    "doc_id": "3c7a1e5d9f2b8064",
+    "source_file": "Consumer Price Index August 2025.pdf",
+    "question": "What was the headline CPI inflation rate in August 2025?",
+    "expected_answer_contains": ["CPI", "inflation", "%"],
+    "retrieval_method": "query_facts",
+    "target_section": "Summary Statistics",
+    "target_pages": [1, 6],
+    "provenance": {
+      "chunk_id": "3c7a1e5d9f2b8064-chunk-000010",
+      "page_number": 2,
+      "section_title": "Summary Statistics",
+      "retrieval_method": "structured_query",
+      "content_hash_prefix": "sha256:c7d8..."
+    }
+  },
+  {
+    "id": "qa-010",
+    "doc_id": "1b9f5c2e8d4a7063",
+    "source_file": "Security_Vulnerability_Disclosure_Standard_Procedure.pdf",
+    "question": "What is the maximum response time for critical severity vulnerabilities?",
+    "expected_answer_contains": ["critical", "days", "response"],
+    "retrieval_method": "navigate_index",
+    "target_section": "Response Timeline",
+    "target_pages": [15, 18],
+    "provenance": {
+      "chunk_id": "1b9f5c2e8d4a7063-chunk-000150",
+      "page_number": 16,
+      "section_title": "Response Timeline",
+      "retrieval_method": "pageindex_navigate",
+      "content_hash_prefix": "sha256:d8e9..."
+    }
+  },
+  {
+    "id": "qa-011",
+    "doc_id": "8c3a6d1f4e9b2047",
+    "source_file": "20191010_Pharmaceutical-Manufacturing-Opportunities.pdf",
+    "question": "What percentage of pharmaceuticals does Ethiopia currently import?",
+    "expected_answer_contains": ["import", "%", "pharmaceutical"],
+    "retrieval_method": "semantic_search",
+    "target_section": "Import Substitution",
+    "target_pages": [21, 28],
+    "provenance": {
+      "chunk_id": "8c3a6d1f4e9b2047-chunk-000210",
+      "page_number": 23,
+      "section_title": "Import Substitution",
+      "retrieval_method": "semantic_search",
+      "content_hash_prefix": "sha256:e9f0..."
+    }
+  },
+  {
+    "id": "qa-012",
+    "doc_id": "5a9c3f1e7d4b2081",
+    "source_file": "Consumer Price Index March 2025.pdf",
+    "question": "How did food prices change between February and March 2025?",
+    "expected_answer_contains": ["food", "price", "March 2025"],
+    "retrieval_method": "query_facts",
+    "target_section": "Food and Non-Alcoholic Beverages",
+    "target_pages": [7, 10],
+    "provenance": {
+      "chunk_id": "5a9c3f1e7d4b2081-chunk-000070",
+      "page_number": 8,
+      "section_title": "Food and Non-Alcoholic Beverages",
+      "retrieval_method": "structured_query",
+      "content_hash_prefix": "sha256:f0a1..."
+    }
+  }
+]

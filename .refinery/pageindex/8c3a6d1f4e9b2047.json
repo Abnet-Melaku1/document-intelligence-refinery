@@ -1,0 +1,422 @@
+{
+  "doc_id": "8c3a6d1f4e9b2047",
+  "filename": "20191010_Pharmaceutical-Manufacturing-Opportunities.pdf",
+  "page_count": 58,
+  "nodes": {
+    "8c3a6d1f4e9b2047-node-0000": {
+      "node_id": "8c3a6d1f4e9b2047-node-0000",
+      "title": "Overview of Ethiopian Pharma Sector",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 12,
+      "summary": "This section covers Overview of Ethiopian Pharma Sector with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000010",
+        "8c3a6d1f4e9b2047-chunk-000011",
+        "8c3a6d1f4e9b2047-chunk-000012",
+        "8c3a6d1f4e9b2047-chunk-000013"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0001": {
+      "node_id": "8c3a6d1f4e9b2047-node-0001",
+      "title": "Market Opportunity Analysis",
+      "level": 1,
+      "page_start": 13,
+      "page_end": 28,
+      "summary": "This section covers Market Opportunity Analysis with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000130",
+        "8c3a6d1f4e9b2047-chunk-000131",
+        "8c3a6d1f4e9b2047-chunk-000132",
+        "8c3a6d1f4e9b2047-chunk-000133"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "8c3a6d1f4e9b2047-node-0002",
+        "8c3a6d1f4e9b2047-node-0003"
+      ]
+    },
+    "8c3a6d1f4e9b2047-node-0002": {
+      "node_id": "8c3a6d1f4e9b2047-node-0002",
+      "title": "Domestic Demand",
+      "level": 2,
+      "page_start": 14,
+      "page_end": 20,
+      "summary": "This section covers Domestic Demand with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000140",
+        "8c3a6d1f4e9b2047-chunk-000141",
+        "8c3a6d1f4e9b2047-chunk-000142",
+        "8c3a6d1f4e9b2047-chunk-000143"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0001",
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0003": {
+      "node_id": "8c3a6d1f4e9b2047-node-0003",
+      "title": "Import Substitution",
+      "level": 2,
+      "page_start": 21,
+      "page_end": 28,
+      "summary": "This section covers Import Substitution with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000210",
+        "8c3a6d1f4e9b2047-chunk-000211",
+        "8c3a6d1f4e9b2047-chunk-000212",
+        "8c3a6d1f4e9b2047-chunk-000213"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0001",
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0004": {
+      "node_id": "8c3a6d1f4e9b2047-node-0004",
+      "title": "Manufacturing Landscape",
+      "level": 1,
+      "page_start": 29,
+      "page_end": 44,
+      "summary": "This section covers Manufacturing Landscape with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000290",
+        "8c3a6d1f4e9b2047-chunk-000291",
+        "8c3a6d1f4e9b2047-chunk-000292",
+        "8c3a6d1f4e9b2047-chunk-000293"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "8c3a6d1f4e9b2047-node-0005",
+        "8c3a6d1f4e9b2047-node-0006"
+      ]
+    },
+    "8c3a6d1f4e9b2047-node-0005": {
+      "node_id": "8c3a6d1f4e9b2047-node-0005",
+      "title": "Existing Players",
+      "level": 2,
+      "page_start": 30,
+      "page_end": 36,
+      "summary": "This section covers Existing Players with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000300",
+        "8c3a6d1f4e9b2047-chunk-000301",
+        "8c3a6d1f4e9b2047-chunk-000302",
+        "8c3a6d1f4e9b2047-chunk-000303"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0004",
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0006": {
+      "node_id": "8c3a6d1f4e9b2047-node-0006",
+      "title": "Infrastructure Requirements",
+      "level": 2,
+      "page_start": 37,
+      "page_end": 44,
+      "summary": "This section covers Infrastructure Requirements with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000370",
+        "8c3a6d1f4e9b2047-chunk-000371",
+        "8c3a6d1f4e9b2047-chunk-000372",
+        "8c3a6d1f4e9b2047-chunk-000373"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0004",
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0007": {
+      "node_id": "8c3a6d1f4e9b2047-node-0007",
+      "title": "Investment Framework",
+      "level": 1,
+      "page_start": 45,
+      "page_end": 58,
+      "summary": "This section covers Investment Framework with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000450",
+        "8c3a6d1f4e9b2047-chunk-000451",
+        "8c3a6d1f4e9b2047-chunk-000452",
+        "8c3a6d1f4e9b2047-chunk-000453"
+      ],
+      "parent_node_id": null,
+      "child_node_ids": [
+        "8c3a6d1f4e9b2047-node-0008",
+        "8c3a6d1f4e9b2047-node-0009"
+      ]
+    },
+    "8c3a6d1f4e9b2047-node-0008": {
+      "node_id": "8c3a6d1f4e9b2047-node-0008",
+      "title": "Incentives and Regulations",
+      "level": 2,
+      "page_start": 46,
+      "page_end": 52,
+      "summary": "This section covers Incentives and Regulations with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000460",
+        "8c3a6d1f4e9b2047-chunk-000461",
+        "8c3a6d1f4e9b2047-chunk-000462",
+        "8c3a6d1f4e9b2047-chunk-000463"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0007",
+      "child_node_ids": []
+    },
+    "8c3a6d1f4e9b2047-node-0009": {
+      "node_id": "8c3a6d1f4e9b2047-node-0009",
+      "title": "Risk Factors",
+      "level": 2,
+      "page_start": 53,
+      "page_end": 58,
+      "summary": "This section covers Risk Factors with detailed analysis, supporting data, and key findings relevant to the document's objectives.",
+      "key_entities": [],
+      "data_types_present": [],
+      "chunk_ids": [
+        "8c3a6d1f4e9b2047-chunk-000530",
+        "8c3a6d1f4e9b2047-chunk-000531",
+        "8c3a6d1f4e9b2047-chunk-000532",
+        "8c3a6d1f4e9b2047-chunk-000533"
+      ],
+      "parent_node_id": "8c3a6d1f4e9b2047-node-0007",
+      "child_node_ids": []
+    }
+  },
+  "root_node_ids": [
+    "8c3a6d1f4e9b2047-node-0000",
+    "8c3a6d1f4e9b2047-node-0001",
+    "8c3a6d1f4e9b2047-node-0004",
+    "8c3a6d1f4e9b2047-node-0007"
+  ],
+  "page_to_nodes": {
+    "1": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "2": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "3": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "4": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "5": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "6": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "7": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "8": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "9": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "10": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "11": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "12": [
+      "8c3a6d1f4e9b2047-node-0000"
+    ],
+    "13": [
+      "8c3a6d1f4e9b2047-node-0001"
+    ],
+    "14": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "15": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "16": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "17": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "18": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "19": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "20": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0002"
+    ],
+    "21": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "22": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "23": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "24": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "25": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "26": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "27": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "28": [
+      "8c3a6d1f4e9b2047-node-0001",
+      "8c3a6d1f4e9b2047-node-0003"
+    ],
+    "29": [
+      "8c3a6d1f4e9b2047-node-0004"
+    ],
+    "30": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "31": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "32": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "33": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "34": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "35": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "36": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0005"
+    ],
+    "37": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "38": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "39": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "40": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "41": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "42": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "43": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "44": [
+      "8c3a6d1f4e9b2047-node-0004",
+      "8c3a6d1f4e9b2047-node-0006"
+    ],
+    "45": [
+      "8c3a6d1f4e9b2047-node-0007"
+    ],
+    "46": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "47": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "48": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "49": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "50": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "51": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "52": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0008"
+    ],
+    "53": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ],
+    "54": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ],
+    "55": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ],
+    "56": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ],
+    "57": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ],
+    "58": [
+      "8c3a6d1f4e9b2047-node-0007",
+      "8c3a6d1f4e9b2047-node-0009"
+    ]
+  },
+  "index_version": "1.0.0"
+}
