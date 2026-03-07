@@ -1,10 +1,12 @@
 # The Document Intelligence Refinery
+
 ## Final Submission Report
+
 ### TRP1 Challenge — Week 3
 
 ---
 
-**Submitted by:** Forward Deployed Engineer Candidate
+**Submitted by:** Abnet Melaku
 **Final Submission Date:** March 7, 2026
 **Repository:** `https://github.com/Abnet-Melaku1/document-intelligence-refinery`
 
@@ -38,28 +40,28 @@ The **Document Intelligence Refinery** is a production-grade, five-stage agentic
 
 The three structural problems the Refinery is designed to solve:
 
-| Problem | What It Means | Refinery Solution |
-|---------|--------------|-------------------|
-| **Structure Collapse** | OCR flattens layouts, breaks tables, drops headers | Classification-aware strategy routing: FastText → Docling → VLM escalation |
-| **Context Poverty** | Token-count chunking severs logical units mid-table | 5-rule ChunkingEngine with table-header preservation, caption linkage, and list unity |
-| **Provenance Blindness** | No spatial reference for extracted numbers | ProvenanceChain records doc_id, page, bounding box, and SHA-256 content hash per claim |
+| Problem                  | What It Means                                       | Refinery Solution                                                                      |
+| ------------------------ | --------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Structure Collapse**   | OCR flattens layouts, breaks tables, drops headers  | Classification-aware strategy routing: FastText → Docling → VLM escalation             |
+| **Context Poverty**      | Token-count chunking severs logical units mid-table | 5-rule ChunkingEngine with table-header preservation, caption linkage, and list unity  |
+| **Provenance Blindness** | No spatial reference for extracted numbers          | ProvenanceChain records doc_id, page, bounding box, and SHA-256 content hash per claim |
 
 **Final deliverables:**
 
-| Component | Status | Key File |
-|-----------|--------|----------|
-| TriageAgent v1.1.0 (pluggable domain classifier, AcroForm detection, ZERO_TEXT) | Complete | `src/agents/triage.py` |
-| ExtractionRouter (A→B→C escalation, human review flag) | Complete | `src/agents/extractor.py` |
-| ChunkingEngine (5-rule constitution + ChunkValidator) | Complete | `src/agents/chunker.py` |
-| PageIndexBuilder (hierarchical TOC, LLM summaries, entity extraction) | Complete | `src/agents/indexer.py` |
-| VectorStore (ChromaDB, all-MiniLM-L6-v2, cosine similarity) | Complete | `src/store/vector_store.py` |
-| FactTable (SQLite, structured row extraction from tables) | Complete | `src/store/fact_table.py` |
-| QueryAgent (ReAct loop, 3 tools, ProvenanceChain) | Complete | `src/agents/query_agent.py` |
-| ClaimVerifier / Audit Mode (sub-claim verification, Verdict enum) | Complete | `src/agents/audit.py` |
-| 12 DocumentProfile JSONs | Complete | `.refinery/profiles/` |
-| 12 PageIndex JSONs | Complete | `.refinery/pageindex/` |
-| 12 Q&A examples with provenance | Complete | `examples/qa_examples.json` |
-| Dockerfile + docker-compose.yml | Complete | `Dockerfile`, `docker-compose.yml` |
+| Component                                                                       | Status   | Key File                           |
+| ------------------------------------------------------------------------------- | -------- | ---------------------------------- |
+| TriageAgent v1.1.0 (pluggable domain classifier, AcroForm detection, ZERO_TEXT) | Complete | `src/agents/triage.py`             |
+| ExtractionRouter (A→B→C escalation, human review flag)                          | Complete | `src/agents/extractor.py`          |
+| ChunkingEngine (5-rule constitution + ChunkValidator)                           | Complete | `src/agents/chunker.py`            |
+| PageIndexBuilder (hierarchical TOC, LLM summaries, entity extraction)           | Complete | `src/agents/indexer.py`            |
+| VectorStore (ChromaDB, all-MiniLM-L6-v2, cosine similarity)                     | Complete | `src/store/vector_store.py`        |
+| FactTable (SQLite, structured row extraction from tables)                       | Complete | `src/store/fact_table.py`          |
+| QueryAgent (ReAct loop, 3 tools, ProvenanceChain)                               | Complete | `src/agents/query_agent.py`        |
+| ClaimVerifier / Audit Mode (sub-claim verification, Verdict enum)               | Complete | `src/agents/audit.py`              |
+| 12 DocumentProfile JSONs                                                        | Complete | `.refinery/profiles/`              |
+| 12 PageIndex JSONs                                                              | Complete | `.refinery/pageindex/`             |
+| 12 Q&A examples with provenance                                                 | Complete | `examples/qa_examples.json`        |
+| Dockerfile + docker-compose.yml                                                 | Complete | `Dockerfile`, `docker-compose.yml` |
 
 ---
 
@@ -143,15 +145,15 @@ New domains onboard by adding a YAML block — no code change required.
 
 #### DocumentProfile v1.1.0 New Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `origin_confidence` | float | Confidence in OriginType classification (0–1) |
-| `layout_confidence` | float | Strength of dominant layout signal |
-| `domain_confidence` | float | Exclusivity ratio of best-matching domain |
-| `is_form_fillable` | bool | True when AcroForm fields detected via pdfminer |
-| `form_field_count` | int | Number of AcroForm fields found |
-| `zero_text_page_count` | int | Pages with char_count=0 and low image area |
-| `triage_version` | str | `"1.1.0"` |
+| Field                  | Type  | Description                                     |
+| ---------------------- | ----- | ----------------------------------------------- |
+| `origin_confidence`    | float | Confidence in OriginType classification (0–1)   |
+| `layout_confidence`    | float | Strength of dominant layout signal              |
+| `domain_confidence`    | float | Exclusivity ratio of best-matching domain       |
+| `is_form_fillable`     | bool  | True when AcroForm fields detected via pdfminer |
+| `form_field_count`     | int   | Number of AcroForm fields found                 |
+| `zero_text_page_count` | int   | Pages with char_count=0 and low image area      |
+| `triage_version`       | str   | `"1.1.0"`                                       |
 
 ### 2.2 Stage 2 — ExtractionRouter
 
@@ -166,6 +168,7 @@ Strategy C — Vision     (VLM via API)   ~$0.025/page  scanned/mixed
 ```
 
 Every attempt is recorded in `strategy_attempts[]` on the ExtractedDocument. The final result includes:
+
 - `routing_decision` — why the initial strategy was chosen
 - `strategy_attempts` — full escalation trail with per-attempt confidence
 - `requires_human_review` — True when terminal strategy confidence < `human_review_threshold`
@@ -179,13 +182,13 @@ All routing decisions are appended to `.refinery/extraction_ledger.jsonl`.
 
 The ChunkingEngine converts an ExtractedDocument into a list of LDUs (Logical Document Units) using a 5-rule constitution:
 
-| Rule | Name | Enforcement | Description |
-|------|------|-------------|-------------|
-| R1 | Table Header Preservation | HARD | Every TABLE LDU inherits its table's headers in metadata; headers never split from data rows |
-| R2 | Caption as Metadata | HARD | Figure/table captions stored in LDU.figure_alt_text or table.caption; not as standalone chunks |
-| R3 | List Unity | HARD | Contiguous list items (bullet/numbered) fused into a single LIST LDU |
-| R4 | Section Context | SOFT | Every LDU carries parent_section and section_path from the enclosing heading |
-| R5 | Cross-Reference Resolution | SOFT | `see Table X`, `per Figure Y` cross-references resolved to chunk_ids where possible |
+| Rule | Name                       | Enforcement | Description                                                                                    |
+| ---- | -------------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
+| R1   | Table Header Preservation  | HARD        | Every TABLE LDU inherits its table's headers in metadata; headers never split from data rows   |
+| R2   | Caption as Metadata        | HARD        | Figure/table captions stored in LDU.figure_alt_text or table.caption; not as standalone chunks |
+| R3   | List Unity                 | HARD        | Contiguous list items (bullet/numbered) fused into a single LIST LDU                           |
+| R4   | Section Context            | SOFT        | Every LDU carries parent_section and section_path from the enclosing heading                   |
+| R5   | Cross-Reference Resolution | SOFT        | `see Table X`, `per Figure Y` cross-references resolved to chunk_ids where possible            |
 
 Text LDUs exceeding `max_chunk_tokens` are split at sentence boundaries using a measured token join (not sum-of-sentence approximation) to prevent overflow at tokenisation boundaries.
 
@@ -259,6 +262,7 @@ ProvenanceChain(query, answer, sources=[ProvenanceEntry...])
 ```
 
 **Three tools:**
+
 1. `search_chunks(query, top_k, doc_id, chunk_types)` — semantic search via VectorStore
 2. `navigate_index(topic, doc_id)` — PageIndex section navigation
 3. `query_facts(sql)` — SQL over FactTable (SELECT only; injection-safe)
@@ -337,15 +341,16 @@ The `content_hash` enables **offline verification**: a reviewer can recompute `s
 
 ## 5. Cost Model
 
-| Strategy | Per-Page Cost | Typical Use Case |
-|----------|--------------|-----------------|
-| Strategy A — FastText (pdfplumber) | $0.000 | Native digital PDFs with clean text |
-| Strategy B — Layout (Docling) | $0.000 | Complex multi-column layouts, embedded tables |
-| Strategy C — Vision (VLM via OpenRouter) | ~$0.025 | Scanned images, handwritten text, form-fillable |
-| PageIndex LLM summaries | ~$0.001/section | Optional; extractive fallback available |
-| QueryAgent (per query) | ~$0.002–0.005 | Depends on iteration count and context size |
+| Strategy                                 | Per-Page Cost   | Typical Use Case                                |
+| ---------------------------------------- | --------------- | ----------------------------------------------- |
+| Strategy A — FastText (pdfplumber)       | $0.000          | Native digital PDFs with clean text             |
+| Strategy B — Layout (Docling)            | $0.000          | Complex multi-column layouts, embedded tables   |
+| Strategy C — Vision (VLM via OpenRouter) | ~$0.025         | Scanned images, handwritten text, form-fillable |
+| PageIndex LLM summaries                  | ~$0.001/section | Optional; extractive fallback available         |
+| QueryAgent (per query)                   | ~$0.002–0.005   | Depends on iteration count and context size     |
 
 **12-document corpus estimate:**
+
 - Triage + A/B extraction (all 12 docs): **$0.00** (local only)
 - PageIndex summaries (12 docs × ~10 sections × $0.001): **~$0.12**
 - 12 Q&A examples (12 × $0.003): **~$0.04**
@@ -355,20 +360,20 @@ The `content_hash` enables **offline verification**: a reviewer can recompute `s
 
 ## 6. 12-Document Corpus Results
 
-| Doc | Class | Strategy Used | Sections | Origin Type | Domain |
-|-----|-------|--------------|---------|-------------|--------|
-| CBE ANNUAL REPORT 2023-24 | A | FastText | 23 | NATIVE_DIGITAL | financial |
-| Annual_Report_JUNE-2023 | A | FastText | 13 | NATIVE_DIGITAL | financial |
-| EthSwitch Annual 2023/24 | A | FastText | 12 | NATIVE_DIGITAL | financial |
-| Audit Report 2023 | B | FastText/Docling | 12 | MIXED | financial |
-| Audited FS 2022 | B | FastText | 9 | NATIVE_DIGITAL | financial |
-| Audited FS 2021 | B | FastText | 6 | NATIVE_DIGITAL | financial |
-| FTA Performance Survey | C | FastText | 14 | NATIVE_DIGITAL | technical |
-| Pharma Manufacturing 2019 | C | FastText | 10 | NATIVE_DIGITAL | technical |
-| Security Vulnerability Std | C | FastText | 8 | NATIVE_DIGITAL | technical |
-| Tax Expenditure 2021/22 | D | FastText | 11 | NATIVE_DIGITAL | financial |
-| Consumer Price Index Aug 25 | D | FastText | 7 | NATIVE_DIGITAL | financial |
-| Consumer Price Index Mar 25 | D | FastText | 7 | NATIVE_DIGITAL | financial |
+| Doc                         | Class | Strategy Used    | Sections | Origin Type    | Domain    |
+| --------------------------- | ----- | ---------------- | -------- | -------------- | --------- |
+| CBE ANNUAL REPORT 2023-24   | A     | FastText         | 23       | NATIVE_DIGITAL | financial |
+| Annual_Report_JUNE-2023     | A     | FastText         | 13       | NATIVE_DIGITAL | financial |
+| EthSwitch Annual 2023/24    | A     | FastText         | 12       | NATIVE_DIGITAL | financial |
+| Audit Report 2023           | B     | FastText/Docling | 12       | MIXED          | financial |
+| Audited FS 2022             | B     | FastText         | 9        | NATIVE_DIGITAL | financial |
+| Audited FS 2021             | B     | FastText         | 6        | NATIVE_DIGITAL | financial |
+| FTA Performance Survey      | C     | FastText         | 14       | NATIVE_DIGITAL | technical |
+| Pharma Manufacturing 2019   | C     | FastText         | 10       | NATIVE_DIGITAL | technical |
+| Security Vulnerability Std  | C     | FastText         | 8        | NATIVE_DIGITAL | technical |
+| Tax Expenditure 2021/22     | D     | FastText         | 11       | NATIVE_DIGITAL | financial |
+| Consumer Price Index Aug 25 | D     | FastText         | 7        | NATIVE_DIGITAL | financial |
+| Consumer Price Index Mar 25 | D     | FastText         | 7        | NATIVE_DIGITAL | financial |
 
 All 12 documents processed by Strategy A (FastText / pdfplumber) at zero API cost.
 PageIndex files written to `.refinery/pageindex/{doc_id}.json`.
@@ -378,6 +383,7 @@ PageIndex files written to `.refinery/pageindex/{doc_id}.json`.
 ## 7. Q&A Examples with Provenance
 
 Twelve Q&A pairs are provided in `examples/qa_examples.json`, one per profiled document. Each entry specifies:
+
 - `question` — the natural-language query
 - `target_section` — the PageIndex node where the answer lives
 - `retrieval_method` — which of the three QueryAgent tools should fire (`semantic_search`, `navigate_index`, or `query_facts`)
@@ -385,6 +391,7 @@ Twelve Q&A pairs are provided in `examples/qa_examples.json`, one per profiled d
 - `provenance` — `chunk_id`, `page_number`, `section_title`, and `content_hash_prefix`
 
 **Sample (qa-001):**
+
 ```json
 {
   "id": "qa-001",
@@ -405,6 +412,7 @@ Twelve Q&A pairs are provided in `examples/qa_examples.json`, one per profiled d
 ```
 
 The three retrieval methods are intentionally distributed:
+
 - 4 queries → `semantic_search` (free-text conceptual questions)
 - 4 queries → `navigate_index` (section-level navigation)
 - 4 queries → `query_facts` (structured numeric lookup from tables)
@@ -415,81 +423,81 @@ The three retrieval methods are intentionally distributed:
 
 ### Stage 1 — TriageAgent
 
-| Feature | Status | File |
-|---------|--------|------|
-| Origin type detection (NATIVE / SCANNED / MIXED) | ✅ Complete | `src/agents/triage.py` |
-| FORM_FILLABLE via AcroForm inspection | ✅ Complete | `src/agents/triage.py` |
-| ZERO_TEXT origin type | ✅ Complete | `src/models/document_profile.py` |
-| Layout complexity (SIMPLE / MULTI_COLUMN / COMPLEX) | ✅ Complete | `src/agents/triage.py` |
-| DomainStrategy ABC + KeywordDomainStrategy | ✅ Complete | `src/agents/triage.py` |
-| DomainClassifier (pluggable, config-driven) | ✅ Complete | `src/agents/triage.py` |
-| Classification confidence scores | ✅ Complete | `src/models/document_profile.py` |
-| Domain keywords externalized to YAML | ✅ Complete | `rubric/extraction_rules.yaml` |
-| 12 DocumentProfile JSONs | ✅ Complete | `.refinery/profiles/` |
-| Test suite (28 passing tests) | ✅ Complete | `tests/test_triage.py` |
+| Feature                                             | Status      | File                             |
+| --------------------------------------------------- | ----------- | -------------------------------- |
+| Origin type detection (NATIVE / SCANNED / MIXED)    | ✅ Complete | `src/agents/triage.py`           |
+| FORM_FILLABLE via AcroForm inspection               | ✅ Complete | `src/agents/triage.py`           |
+| ZERO_TEXT origin type                               | ✅ Complete | `src/models/document_profile.py` |
+| Layout complexity (SIMPLE / MULTI_COLUMN / COMPLEX) | ✅ Complete | `src/agents/triage.py`           |
+| DomainStrategy ABC + KeywordDomainStrategy          | ✅ Complete | `src/agents/triage.py`           |
+| DomainClassifier (pluggable, config-driven)         | ✅ Complete | `src/agents/triage.py`           |
+| Classification confidence scores                    | ✅ Complete | `src/models/document_profile.py` |
+| Domain keywords externalized to YAML                | ✅ Complete | `rubric/extraction_rules.yaml`   |
+| 12 DocumentProfile JSONs                            | ✅ Complete | `.refinery/profiles/`            |
+| Test suite (28 passing tests)                       | ✅ Complete | `tests/test_triage.py`           |
 
 ### Stage 2 — ExtractionRouter
 
-| Feature | Status | File |
-|---------|--------|------|
-| Strategy A — FastText (pdfplumber) | ✅ Complete | `src/strategies/fast_text.py` |
-| Strategy B — Layout (Docling stub) | ✅ Complete | `src/strategies/layout.py` |
-| Strategy C — Vision (VLM via OpenRouter) | ✅ Complete | `src/strategies/vision.py` |
-| A→B→C escalation with confidence gates | ✅ Complete | `src/agents/extractor.py` |
-| Routing decision embedding | ✅ Complete | `src/models/extracted_document.py` |
-| Human review flag | ✅ Complete | `src/agents/extractor.py` |
-| Extraction ledger (JSONL) | ✅ Complete | `.refinery/extraction_ledger.jsonl` |
+| Feature                                  | Status      | File                                |
+| ---------------------------------------- | ----------- | ----------------------------------- |
+| Strategy A — FastText (pdfplumber)       | ✅ Complete | `src/strategies/fast_text.py`       |
+| Strategy B — Layout (Docling stub)       | ✅ Complete | `src/strategies/layout.py`          |
+| Strategy C — Vision (VLM via OpenRouter) | ✅ Complete | `src/strategies/vision.py`          |
+| A→B→C escalation with confidence gates   | ✅ Complete | `src/agents/extractor.py`           |
+| Routing decision embedding               | ✅ Complete | `src/models/extracted_document.py`  |
+| Human review flag                        | ✅ Complete | `src/agents/extractor.py`           |
+| Extraction ledger (JSONL)                | ✅ Complete | `.refinery/extraction_ledger.jsonl` |
 
 ### Stage 3 — ChunkingEngine
 
-| Feature | Status | File |
-|---------|--------|------|
-| R1 — Table header preservation | ✅ Complete | `src/agents/chunker.py` |
-| R2 — Caption as metadata | ✅ Complete | `src/agents/chunker.py` |
-| R3 — List unity | ✅ Complete | `src/agents/chunker.py` |
-| R4 — Section context propagation | ✅ Complete | `src/agents/chunker.py` |
-| R5 — Cross-reference resolution | ✅ Complete | `src/agents/chunker.py` |
+| Feature                                     | Status      | File                    |
+| ------------------------------------------- | ----------- | ----------------------- |
+| R1 — Table header preservation              | ✅ Complete | `src/agents/chunker.py` |
+| R2 — Caption as metadata                    | ✅ Complete | `src/agents/chunker.py` |
+| R3 — List unity                             | ✅ Complete | `src/agents/chunker.py` |
+| R4 — Section context propagation            | ✅ Complete | `src/agents/chunker.py` |
+| R5 — Cross-reference resolution             | ✅ Complete | `src/agents/chunker.py` |
 | ChunkValidator (hard/soft rule enforcement) | ✅ Complete | `src/agents/chunker.py` |
-| Token-boundary safe splitting | ✅ Complete | `src/agents/chunker.py` |
-| Test suite (30 passing tests) | ✅ Complete | `tests/test_chunker.py` |
+| Token-boundary safe splitting               | ✅ Complete | `src/agents/chunker.py` |
+| Test suite (30 passing tests)               | ✅ Complete | `tests/test_chunker.py` |
 
 ### Stage 4 — PageIndexBuilder
 
-| Feature | Status | File |
-|---------|--------|------|
-| HEADING-driven tree construction | ✅ Complete | `src/agents/indexer.py` |
-| Chunk-to-node assignment | ✅ Complete | `src/agents/indexer.py` |
-| page_to_nodes reverse index | ✅ Complete | `src/agents/indexer.py` |
-| LLM section summaries (OpenRouter) | ✅ Complete | `src/agents/indexer.py` |
-| Extractive summary fallback | ✅ Complete | `src/agents/indexer.py` |
+| Feature                               | Status      | File                    |
+| ------------------------------------- | ----------- | ----------------------- |
+| HEADING-driven tree construction      | ✅ Complete | `src/agents/indexer.py` |
+| Chunk-to-node assignment              | ✅ Complete | `src/agents/indexer.py` |
+| page_to_nodes reverse index           | ✅ Complete | `src/agents/indexer.py` |
+| LLM section summaries (OpenRouter)    | ✅ Complete | `src/agents/indexer.py` |
+| Extractive summary fallback           | ✅ Complete | `src/agents/indexer.py` |
 | Entity extraction (monetary/date/org) | ✅ Complete | `src/agents/indexer.py` |
-| 12 PageIndex JSONs | ✅ Complete | `.refinery/pageindex/` |
+| 12 PageIndex JSONs                    | ✅ Complete | `.refinery/pageindex/`  |
 
 ### Stage 5 — Query + Audit
 
-| Feature | Status | File |
-|---------|--------|------|
+| Feature                                        | Status      | File                        |
+| ---------------------------------------------- | ----------- | --------------------------- |
 | VectorStore (ChromaDB + sentence-transformers) | ✅ Complete | `src/store/vector_store.py` |
-| FactTable (SQLite) | ✅ Complete | `src/store/fact_table.py` |
-| QueryAgent — search_chunks tool | ✅ Complete | `src/agents/query_agent.py` |
-| QueryAgent — navigate_index tool | ✅ Complete | `src/agents/query_agent.py` |
-| QueryAgent — query_facts tool | ✅ Complete | `src/agents/query_agent.py` |
-| ReAct loop with LLM orchestration | ✅ Complete | `src/agents/query_agent.py` |
-| Extractive fallback (no API key) | ✅ Complete | `src/agents/query_agent.py` |
-| ProvenanceChain with content hash | ✅ Complete | `src/models/provenance.py` |
-| ClaimVerifier — sub-claim extraction | ✅ Complete | `src/agents/audit.py` |
-| ClaimVerifier — LLM judgment | ✅ Complete | `src/agents/audit.py` |
-| ClaimVerifier — lexical fallback | ✅ Complete | `src/agents/audit.py` |
-| AuditReport (Verdict enum, per-claim) | ✅ Complete | `src/agents/audit.py` |
-| 12 Q&A examples with provenance | ✅ Complete | `examples/qa_examples.json` |
+| FactTable (SQLite)                             | ✅ Complete | `src/store/fact_table.py`   |
+| QueryAgent — search_chunks tool                | ✅ Complete | `src/agents/query_agent.py` |
+| QueryAgent — navigate_index tool               | ✅ Complete | `src/agents/query_agent.py` |
+| QueryAgent — query_facts tool                  | ✅ Complete | `src/agents/query_agent.py` |
+| ReAct loop with LLM orchestration              | ✅ Complete | `src/agents/query_agent.py` |
+| Extractive fallback (no API key)               | ✅ Complete | `src/agents/query_agent.py` |
+| ProvenanceChain with content hash              | ✅ Complete | `src/models/provenance.py`  |
+| ClaimVerifier — sub-claim extraction           | ✅ Complete | `src/agents/audit.py`       |
+| ClaimVerifier — LLM judgment                   | ✅ Complete | `src/agents/audit.py`       |
+| ClaimVerifier — lexical fallback               | ✅ Complete | `src/agents/audit.py`       |
+| AuditReport (Verdict enum, per-claim)          | ✅ Complete | `src/agents/audit.py`       |
+| 12 Q&A examples with provenance                | ✅ Complete | `examples/qa_examples.json` |
 
 ### Infrastructure
 
-| Feature | Status | File |
-|---------|--------|------|
-| Dockerfile (multi-stage, embedding pre-download) | ✅ Complete | `Dockerfile` |
-| docker-compose.yml (refinery + chroma services) | ✅ Complete | `docker-compose.yml` |
-| pyproject.toml with optional `[final]` extras | ✅ Complete | `pyproject.toml` |
+| Feature                                           | Status      | File                           |
+| ------------------------------------------------- | ----------- | ------------------------------ |
+| Dockerfile (multi-stage, embedding pre-download)  | ✅ Complete | `Dockerfile`                   |
+| docker-compose.yml (refinery + chroma services)   | ✅ Complete | `docker-compose.yml`           |
+| pyproject.toml with optional `[final]` extras     | ✅ Complete | `pyproject.toml`               |
 | rubric/extraction_rules.yaml (fully externalized) | ✅ Complete | `rubric/extraction_rules.yaml` |
 
 ---
@@ -541,13 +549,13 @@ docker compose run refinery python -m src.agents.audit "Revenue grew 18%"
 
 ## 10. What Would We Change with More Time
 
-| Area | Current State | Improvement |
-|------|--------------|-------------|
-| **Extraction accuracy** | Docling/pdfplumber for layout; VLM for scanned | Tune Docling confidence thresholds per document class; fine-tune a table extraction model on Ethiopian financial PDFs |
-| **Embedding model** | all-MiniLM-L6-v2 (general English) | Fine-tune on financial/regulatory Amharic-English mixed text; evaluate multilingual-e5-large |
-| **PageIndex navigation** | Keyword overlap scoring in `navigate()` | Replace with embedding similarity (embed section summaries into the vector store alongside LDUs) |
-| **ReAct loop** | Single-turn LLM calls via httpx | Migrate to LangGraph for proper state management, tool call schemas, and streaming |
-| **FactTable queries** | Raw SQL in query_facts tool | Add a NL→SQL layer (text-to-SQL) so users don't need to write SQL; schema introspection for the LLM |
-| **Bounding box provenance** | Not stored in VectorStore (ChromaDB metadata) | Store bbox as JSON in ChromaDB metadata; surface in ProvenanceEntry |
-| **Evaluation harness** | 12 hand-crafted Q&A examples | Automated evaluation with LLM-as-judge on full 50-document corpus; precision@k metrics |
-| **Scanned document handling** | VLM via OpenRouter (GPT-4V equivalent) | Add Tesseract as a cheap OCR tier between Docling and VLM; reduces Vision API calls by ~30% |
+| Area                          | Current State                                  | Improvement                                                                                                           |
+| ----------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Extraction accuracy**       | Docling/pdfplumber for layout; VLM for scanned | Tune Docling confidence thresholds per document class; fine-tune a table extraction model on Ethiopian financial PDFs |
+| **Embedding model**           | all-MiniLM-L6-v2 (general English)             | Fine-tune on financial/regulatory Amharic-English mixed text; evaluate multilingual-e5-large                          |
+| **PageIndex navigation**      | Keyword overlap scoring in `navigate()`        | Replace with embedding similarity (embed section summaries into the vector store alongside LDUs)                      |
+| **ReAct loop**                | Single-turn LLM calls via httpx                | Migrate to LangGraph for proper state management, tool call schemas, and streaming                                    |
+| **FactTable queries**         | Raw SQL in query_facts tool                    | Add a NL→SQL layer (text-to-SQL) so users don't need to write SQL; schema introspection for the LLM                   |
+| **Bounding box provenance**   | Not stored in VectorStore (ChromaDB metadata)  | Store bbox as JSON in ChromaDB metadata; surface in ProvenanceEntry                                                   |
+| **Evaluation harness**        | 12 hand-crafted Q&A examples                   | Automated evaluation with LLM-as-judge on full 50-document corpus; precision@k metrics                                |
+| **Scanned document handling** | VLM via OpenRouter (GPT-4V equivalent)         | Add Tesseract as a cheap OCR tier between Docling and VLM; reduces Vision API calls by ~30%                           |
