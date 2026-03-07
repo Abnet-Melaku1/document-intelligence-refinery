@@ -220,10 +220,14 @@ class PageIndexBuilder:
         # ------------------------------------------------------------------
         # Step 2: Assign non-heading LDUs to their section node
         # ------------------------------------------------------------------
-        # For each LDU, find its parent node by section_path matching
-        section_title_to_node: dict[str, PageIndexNode] = {
-            n.title: n for n in index.nodes.values()
-        }
+        # For each LDU, find its parent node by section_path matching.
+        # Build mapping title → node, keeping the FIRST occurrence so that
+        # duplicate section titles (e.g. two "Introduction" headings) always
+        # resolve to the earlier section in reading order.
+        section_title_to_node: dict[str, PageIndexNode] = {}
+        for n in index.nodes.values():
+            if n.title not in section_title_to_node:
+                section_title_to_node[n.title] = n
 
         for ldu in ldus:
             if ldu.chunk_type == ChunkType.HEADING:

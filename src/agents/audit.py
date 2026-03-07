@@ -7,8 +7,8 @@ the verifier:
   3. Classifies each sub-claim as SUPPORTED / CONTRADICTED / UNVERIFIABLE.
   4. Returns an AuditReport with per-claim verdicts and a ProvenanceChain.
 
-LLM backend: OpenRouter (configurable). Falls back to lexical matching when no
-API key is configured.
+LLM backend: Google Gemini via google-genai SDK (configurable model, default gemini-2.0-flash).
+Falls back to lexical matching when no API key is configured.
 
 Usage:
     verifier = ClaimVerifier()
@@ -224,8 +224,14 @@ class ClaimVerifier:
                 context = claim[start:end].strip()
                 sub_claims.append(SubClaim(text=context))
 
-        # Whole claim as fallback if nothing extracted
         if not sub_claims:
+            # Pure qualitative claim (no numbers/dates) — verify the whole claim
+            sub_claims.append(SubClaim(text=claim))
+        else:
+            # Specific sub-claims were extracted, but the overall assertion may
+            # contain qualitative context (e.g. "maintained sound governance") that
+            # the numeric checks won't cover.  Add the full claim as an additional
+            # sub-claim so the overall statement is also evaluated.
             sub_claims.append(SubClaim(text=claim))
 
         return sub_claims

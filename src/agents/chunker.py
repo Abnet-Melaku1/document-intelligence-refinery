@@ -380,14 +380,15 @@ class ChunkingEngine:
 
                 if tb.is_heading:
                     # R4: update section context
+                    # Trim ancestor chain to parent depth, then append current title.
+                    # current_path[:level-1] correctly handles any heading depth:
+                    #   level 1 → [:0] + [title] = [title]
+                    #   level 2 → [:1] + [title] = [h1, title]
+                    #   level 3 → [:2] + [title] = [h1, h2, title]
+                    #   level 4 → [:3] + [title] = [h1, h2, h3, title]  (was broken before)
                     level = tb.heading_level or 1
                     title = tb.text.strip()
-                    if level == 1:
-                        current_path = [title]
-                    elif level == 2:
-                        current_path = current_path[:1] + [title]
-                    else:
-                        current_path = current_path[:2] + [title]
+                    current_path = current_path[:level - 1] + [title]
                     current_section = title
 
                     cid = _make_id()

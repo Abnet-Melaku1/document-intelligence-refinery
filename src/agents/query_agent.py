@@ -1,4 +1,4 @@
-"""Stage 5: QueryAgent — LangGraph-powered document Q&A with provenance.
+"""Stage 5: QueryAgent — ReAct-loop document Q&A with provenance.
 
 The QueryAgent answers natural-language questions about ingested documents by
 orchestrating three retrieval tools in a ReAct loop:
@@ -229,6 +229,8 @@ class QueryAgent:
         system_prompt = self._build_system_prompt(doc_id)
         steps: list[AgentStep] = []
         accumulated_results: list[SearchResult] = []
+        # Track the retrieval method per chunk_id so ProvenanceEntry is accurate
+        chunk_retrieval_methods: dict[str, str] = {}
 
         # Build conversation history as genai Content objects
         contents: list = [
@@ -261,11 +263,15 @@ class QueryAgent:
                 search_result = self._vs.search(
                     query=question, top_k=max_sources, doc_id=doc_id
                 )
+                for sr in search_result:
+                    if sr.chunk_id not in chunk_retrieval_methods:
+                        chunk_retrieval_methods[sr.chunk_id] = "semantic_search"
                 accumulated_results.extend(search_result)
                 return self._build_chain(
                     question=question,
                     answer=step.final_answer,
                     search_results=accumulated_results[:max_sources],
+                    retrieval_methods=chunk_retrieval_methods,
                     doc_id=doc_id,
                 )
 
@@ -273,11 +279,23 @@ class QueryAgent:
                 tool_result = self._dispatch_tool(step.tool_name, step.tool_input)
                 step.tool_result = tool_result
 
-                # Collect any search results for provenance
+                # Collect any search results for provenance, tagging their retrieval method
                 if step.tool_name == "search_chunks" and tool_result.success:
                     for r in tool_result.data:
                         sr = SearchResult(**r)
                         accumulated_results.append(sr)
+                        chunk_retrieval_methods[sr.chunk_id] = "semantic_search"
+                elif step.tool_name == "navigate_index" and tool_result.success:
+                    # navigate_index returns section nodes with chunk_ids; fetch those chunks
+                    for node_data in tool_result.data:
+                        for cid in node_data.get("chunk_ids", []):
+                            chunk_retrieval_methods[cid] = "pageindex_navigate"
+                elif step.tool_name == "query_facts" and tool_result.success:
+                    # query_facts returns dicts; mark any already-accumulated chunks
+                    # as having been confirmed via structured query
+                    for sr in accumulated_results:
+                        if sr.chunk_id not in chunk_retrieval_methods:
+                            chunk_retrieval_methods[sr.chunk_id] = "structured_query"
 
                 # Feed tool result back to LLM
                 from google.genai import types as gtypes
@@ -295,6 +313,7 @@ class QueryAgent:
 
         # Fallback if loop exhausted without final answer
         return self._extractive_answer(question, doc_id, max_sources)
+
 
     def _extractive_answer(
         self,
@@ -396,21 +415,26 @@ class QueryAgent:
         answer: str,
         search_results: list[SearchResult],
         doc_id: Optional[str],
+        retrieval_methods: Optional[dict[str, str]] = None,
     ) -> ProvenanceChain:
-        """Construct a ProvenanceChain from search results."""
+        """Construct a ProvenanceChain from search results.
+
+        retrieval_methods maps chunk_id → method string so each ProvenanceEntry
+        accurately reflects how it was retrieved (semantic_search, pageindex_navigate,
+        or structured_query) rather than always defaulting to semantic_search.
+        """
         entries: list[ProvenanceEntry] = []
         seen_chunk_ids: set[str] = set()
+        methods = retrieval_methods or {}
 
         for result in search_results:
             if result.chunk_id in seen_chunk_ids:
                 continue
             seen_chunk_ids.add(result.chunk_id)
 
-            # Compute a stable content hash for verification
             content_hash = hashlib.sha256(result.content.encode()).hexdigest()
-
-            # Resolve filename from doc metadata (use doc_id as fallback)
             filename = f"{result.doc_id}.pdf"
+            method = methods.get(result.chunk_id, "semantic_search")
 
             entries.append(ProvenanceEntry(
                 doc_id=result.doc_id,
@@ -422,7 +446,7 @@ class QueryAgent:
                 content_hash=content_hash,
                 excerpt=result.content[:200],
                 retrieval_score=result.score,
-                retrieval_method="semantic_search",
+                retrieval_method=method,
             ))
 
         return ProvenanceChain(
