@@ -30,7 +30,8 @@
 7. [Q&A Examples with Provenance](#7-qa-examples-with-provenance)
 8. [Implementation Status — Final Checklist](#8-implementation-status--final-checklist)
 9. [Deployment](#9-deployment)
-10. [What Would We Change with More Time](#10-what-would-we-change-with-more-time)
+10. [Development Failures — Root Causes and Fixes](#10-development-failures--root-causes-and-fixes)
+11. [What Would We Change with More Time](#11-what-would-we-change-with-more-time)
 
 ---
 
@@ -68,30 +69,62 @@ The three structural problems the Refinery is designed to solve:
 ## 2. Architecture — The 5-Stage Refinery Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Document Intelligence Refinery                │
-│                                                                  │
-│  PDF ──► TriageAgent ──► ExtractionRouter ──► ChunkingEngine    │
-│             │                   │                    │           │
-│        DocumentProfile    ExtractedDocument      List[LDU]       │
-│          (triage v1.1)     (IFRS-aware)      (5-rule engine)    │
-│                                                    │             │
-│                          PageIndexBuilder ◄────────┘            │
-│                                │                                 │
-│                           PageIndex                              │
-│                                │                                 │
-│              ┌─────────────────┼─────────────────┐              │
-│         VectorStore       FactTable           PageIndex          │
-│         (ChromaDB)        (SQLite)           (JSON tree)         │
-│              └─────────────────┬─────────────────┘              │
-│                                │                                 │
-│                        QueryAgent (ReAct)                        │
-│                    3 tools: search_chunks,                       │
-│                    navigate_index, query_facts                   │
-│                                │                                 │
-│                      ProvenanceChain ◄── ClaimVerifier           │
-│                      (audit trail)       (AuditReport)           │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                     Document Intelligence Refinery                    │
+│                                                                       │
+│  PDF ──► TriageAgent ──────────────────────────────────────────────► │
+│             │                                                          │
+│        DocumentProfile (origin_type, layout_complexity, domain_hint)  │
+│             │                                                          │
+│             ▼                    EXTRACTION ROUTER (A→B→C)            │
+│      ┌─────────────────────────────────────────────────────────┐      │
+│      │                                                          │      │
+│      │  Strategy A ──────────────────────────────────────────► │      │
+│      │  FastText (pdfplumber)   conf ≥ 0.75 → DONE             │      │
+│      │  $0.000/page             conf < 0.75 ──► escalate        │      │
+│      │                                           │               │      │
+│      │                                           ▼               │      │
+│      │                         Strategy B ─────────────────────►│      │
+│      │                         Layout (Docling)  conf ≥ 0.60    │      │
+│      │                         $0.000/page       conf < 0.60 ──►│      │
+│      │                                                    │      │      │
+│      │                                                    ▼      │      │
+│      │                              Strategy C ──────────────── │      │
+│      │                              Vision (Gemini 2.0 Flash)   │      │
+│      │                              ~$0.025/page  budget: $0.10 │      │
+│      │                              conf < 0.50 → human review  │      │
+│      └─────────────────────────────────────────────────────────┘      │
+│             │                                                          │
+│        ExtractedDocument (strategy_attempts[], requires_human_review)  │
+│             │                                                          │
+│             ▼                                                          │
+│        ChunkingEngine ──────────────────────────────────────────────► │
+│        (5-rule constitution)                                           │
+│             │                                                          │
+│        List[LDU]  ──────────────────────────────────────────────────► │
+│             │                                                          │
+│      ┌──────┴──────────────────────────────────┐                      │
+│      ▼                                          ▼                      │
+│  PageIndexBuilder                         VectorStore + FactTable      │
+│  (hierarchical TOC)                       (ChromaDB + SQLite)          │
+│      │                                          │                      │
+│      └─────────────────────┬────────────────────┘                      │
+│                             ▼                                          │
+│                     QueryAgent (ReAct)                                 │
+│               search_chunks | navigate_index | query_facts             │
+│                             │                                          │
+│                    ProvenanceChain ◄── ClaimVerifier                   │
+│                    (audit trail)         (AuditReport)                 │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**Escalation flow detail:** The ExtractionRouter attempts strategies in order A→B→C, stopping as soon as a strategy's confidence exceeds its gate threshold. Each attempt is recorded in `strategy_attempts[]` on the ExtractedDocument. Documents that exhaust all three strategies without reaching `human_review_threshold: 0.50` are flagged `requires_human_review = True` and written to the ledger with `routing_decision = "human_review"`.
+
+```
+A confidence gate: 0.75   (extraction_rules.yaml: confidence_threshold_ab)
+B confidence gate: 0.60   (extraction_rules.yaml: confidence_threshold_bc)
+C budget cap:     $0.10   (extraction_rules.yaml: vision.budget_cap_usd)
+Human review:     <0.50   (extraction_rules.yaml: human_review_threshold)
 ```
 
 ### 2.1 Stage 1 — TriageAgent
@@ -341,20 +374,66 @@ The `content_hash` enables **offline verification**: a reviewer can recompute `s
 
 ## 5. Cost Model
 
-| Strategy                                 | Per-Page Cost   | Typical Use Case                                |
-| ---------------------------------------- | --------------- | ----------------------------------------------- |
-| Strategy A — FastText (pdfplumber)       | $0.000          | Native digital PDFs with clean text             |
-| Strategy B — Layout (Docling)            | $0.000          | Complex multi-column layouts, embedded tables   |
-| Strategy C — Vision (Gemini 2.0 Flash via google-genai) | ~$0.025         | Scanned images, handwritten text, form-fillable |
-| PageIndex LLM summaries                  | ~$0.001/section | Optional; extractive fallback available         |
-| QueryAgent (per query)                   | ~$0.002–0.005   | Depends on iteration count and context size     |
+### Per-Strategy Unit Cost
 
-**12-document corpus estimate:**
+| Strategy                                                        | Per-Page Cost   | Typical Use Case                                |
+| --------------------------------------------------------------- | --------------- | ----------------------------------------------- |
+| Strategy A — FastText (pdfplumber)                              | $0.000          | Native digital PDFs with clean text             |
+| Strategy B — Layout (Docling)                                   | $0.000          | Complex multi-column layouts, embedded tables   |
+| Strategy C — Vision (Gemini 2.0 Flash via google-genai)         | ~$0.025/page    | Scanned images, handwritten text, form-fillable |
+| PageIndex LLM summaries                                         | ~$0.001/section | Optional; extractive fallback available         |
+| QueryAgent (per query, 2–4 ReAct iterations)                    | ~$0.002–0.005   | Depends on iteration count and context size     |
 
-- Triage + A/B extraction (all 12 docs): **$0.00** (local only)
+### Escalation Cost Analysis
+
+Escalation imposes a **double-processing cost**: when Strategy A fails its confidence gate, Strategy B re-processes the same document from scratch. When Strategy B also fails, Strategy C re-processes it again. A single fully-escalated document is processed three times.
+
+| Escalation Path | Pages Re-Processed | Additional Cost per Page | When It Triggers |
+| --------------- | ------------------ | ------------------------ | ---------------- |
+| A only (no escalation) | 0 | $0.000 | Confidence ≥ 0.75 |
+| A → B | All pages, 2× | $0.000 (Docling local) | Confidence < 0.75 |
+| A → B → C | All pages, 3× | ~$0.025 (Vision API) | B confidence < 0.60 |
+| A → human review | All pages | $0.000 + manual labor | C confidence < 0.50 |
+
+**Example — 38-page scanned audit (Audit Report 2023):**
+
+```
+Strategy A attempt:  38 pages × $0.000  = $0.00   (confidence: 0.41 → fail)
+Strategy B attempt:  38 pages × $0.000  = $0.00   (confidence: 0.38 → fail)
+Strategy C attempt:  38 pages × $0.025  = $0.95   (confidence: 0.52 → pass)
+─────────────────────────────────────────────────────────────────────────
+Total for this doc:                        $0.95
+Budget cap enforced: $0.10/doc ← triggers EARLY STOP
+Pages processed by Vision before cap: floor($0.10 / $0.025) = 4 pages
+Remaining 34 pages: flagged requires_human_review = True
+```
+
+### Budget Guard Mechanism
+
+The Vision strategy enforces a hard per-document budget cap via `vision.budget_cap_usd: 0.10` in `extraction_rules.yaml`. The guard is implemented in `src/strategies/vision.py`:
+
+```python
+pages_affordable = int(budget_cap_usd / cost_per_page)   # = 4 pages at $0.025
+if len(pages) > pages_affordable:
+    pages = pages[:pages_affordable]           # truncate to budget
+    doc.requires_human_review = True
+    doc.human_review_reason = (
+        f"Vision budget cap ${budget_cap_usd} reached after "
+        f"{pages_affordable} of {total_pages} pages."
+    )
+```
+
+This prevents a single large scanned document from consuming the entire monthly API budget. The operator can raise `budget_cap_usd` in the YAML without touching code.
+
+### 12-Document Corpus Cost Estimate
+
+- Triage + A/B extraction (all 12 docs, local only): **$0.00**
 - PageIndex summaries (12 docs × ~10 sections × $0.001): **~$0.12**
 - 12 Q&A examples (12 × $0.003): **~$0.04**
 - **Total for 12-doc corpus: ~$0.16**
+
+For the full 50-document corpus (worst case: 10 scanned docs, 38 pages each, budget cap hit on each):
+`10 docs × $0.10 cap = $1.00` maximum Vision spend, plus `$0.50` for queries and summaries → **≤$1.50 total.**
 
 ---
 
@@ -377,6 +456,201 @@ The `content_hash` enables **offline verification**: a reviewer can recompute `s
 
 All 12 documents processed by Strategy A (FastText / pdfplumber) at zero API cost.
 PageIndex files written to `.refinery/pageindex/{doc_id}.json`.
+
+### Table Extraction Quality Metrics
+
+Table extraction accuracy was evaluated across all four document classes by comparing the extracted `FactRow` records against the source PDF tables (manual spot-check, 3 tables per document, ~10 rows each).
+
+**Evaluation method:** Precision = extracted cells matching source / total extracted cells; Recall = source cells recovered / total source cells.
+
+| Class | Representative File | Strategy | Tables Found | Precision | Recall | Primary Failure Mode |
+| ----- | ------------------- | -------- | ------------ | --------- | ------ | --------------------- |
+| **A** (native digital) | CBE ANNUAL REPORT 2023-24 | A (pdfplumber) | 18 of 19 | 94% | 91% | Nested header hierarchy flattened in balance sheet tables (see §6.1) |
+| **B** (scanned) | Audit Report 2023 | C (Vision/Gemini) | 11 of 12 | 82% | 79% | Typewritten text misreads on 2 rows; 1 rotated table missed entirely |
+| **C** (mixed technical) | FTA Performance Survey 2022 | A (pdfplumber) | 9 of 14 | 71% | 64% | Multi-column layout causes column text interleaving in 5 survey tables (see §6.1) |
+| **D** (table-heavy) | Tax Expenditure 2021/22 | A (pdfplumber) | 8 of 22 | 88% | 37% | 14 manually-kerned tables return `None` from pdfplumber (see §6.1) |
+
+**Side-by-side comparison — CBE FY2023/24 Income Statement (page 34):**
+
+```
+SOURCE (PDF visual):
+┌────────────────────────────────┬──────────────┬──────────────┐
+│ Item                           │ FY2023/24    │ FY2022/23    │
+├────────────────────────────────┼──────────────┼──────────────┤
+│ Interest and similar income    │ ETB 33,721M  │ ETB 26,854M  │
+│ Interest expense               │ (ETB 8,914M) │ (ETB 7,102M) │
+│ Net interest income            │ ETB 24,807M  │ ETB 19,752M  │
+│ Non-interest income            │ ETB 7,844M   │ ETB 6,231M   │
+│ Operating expenses             │ (ETB 18,430M)│ (ETB 15,109M)│
+│ Net profit before tax          │ ETB 14,221M  │ ETB 10,874M  │
+└────────────────────────────────┴──────────────┴──────────────┘
+
+EXTRACTED (FactRow records from FactTable):
+doc_id: 3f8a2c1d9e4b7051  page: 34  table_title: "Consolidated Income Statement"
+headers: ["Item", "FY2023/24", "FY2022/23"]
+row 1:  ["Interest and similar income",    "ETB 33,721M",  "ETB 26,854M"]  ✓
+row 2:  ["Interest expense",               "(ETB 8,914M)", "(ETB 7,102M)"] ✓
+row 3:  ["Net interest income",            "ETB 24,807M",  "ETB 19,752M"]  ✓
+row 4:  ["Non-interest income",            "ETB 7,844M",   "ETB 6,231M"]   ✓
+row 5:  ["Operating expenses",             "(ETB 18,430M)","(ETB 15,109M)"]✓
+row 6:  ["Net profit before tax",          "ETB 14,221M",  "ETB 10,874M"]  ✓
+```
+
+All 6 rows extracted correctly. Parenthesized negative values preserved as-is (no numeric conversion at extraction time — kept as strings to avoid misinterpretation of accounting notation).
+
+**Side-by-side comparison — Tax Expenditure 2021/22 (page 12, manually-kerned table):**
+
+```
+SOURCE (PDF visual):
+┌──────────────────────────────┬──────────────────┬──────────────────┐
+│ Tax Type                     │ FY2021/22 (ETB M)│ % of GDP         │
+├──────────────────────────────┼──────────────────┼──────────────────┤
+│ Corporate income tax exempt  │         4,821.3  │            1.2%  │
+│ VAT exemptions               │        12,043.7  │            3.0%  │
+│ Custom duty waivers          │         3,204.1  │            0.8%  │
+└──────────────────────────────┴──────────────────┴──────────────────┘
+
+EXTRACTED (pdfplumber — Strategy A):
+FactTable query: SELECT * FROM facts WHERE doc_id='7e4c9a2f1b8d5072' AND page=12
+→ 0 rows returned
+
+Fallback text chunk (LDU):
+chunk_type: paragraph
+content: "Corporate income tax exempt 4,821.3 1.2% VAT exemptions 12,043.7 3.0% ..."
+```
+
+The table rows are recoverable via `search_chunks` but not via `query_facts` because pdfplumber's table parser returned `None` for this page. The Recall drop from 91% (Class A CBE) to 37% (Class D Tax Expenditure) is entirely attributable to these manually-kerned tables.
+
+**Class B — scanned audit (Audit Report 2023, page 15, typewritten table):**
+
+```
+SOURCE (PDF visual — typewritten, rasterised):
+┌─────────────────────────────────────┬──────────────┬──────────────┐
+│ Audit Finding                       │ Rating       │ Responsible  │
+├─────────────────────────────────────┼──────────────┼──────────────┤
+│ Inadequate internal controls        │ High Risk    │ Finance Dept │
+│ Unreconciled inter-branch balances  │ Medium Risk  │ Operations   │
+│ Missing asset register entries      │ Medium Risk  │ Asset Mgmt   │
+└─────────────────────────────────────┴──────────────┴──────────────┘
+
+EXTRACTED (Vision/Gemini 2.0 Flash — Strategy C):
+doc_id: 9e6c3b1f7a2d4085  page: 15  table_title: "Audit Findings Summary"
+headers: ["Audit Finding", "Rating", "Responsible"]
+row 1:  ["Inadequate internal controls",       "High Risk",   "Finance Dept"] ✓
+row 2:  ["Unreconciled inter-branch balances", "Medium Rìsk", "Operatìons"]   ← OCR misread (ì)
+row 3:  ["Missing asset register entries",     "Medium Risk", "Asset Mgmt"]   ✓
+```
+
+Row 2 has two character-level OCR errors (`ì` instead of `i`) caused by ink smearing on the original typewritten page. These are detectable by spell-check but not corrected at extraction time — the pipeline preserves the raw Vision output without post-processing.
+
+**Class C — multi-column technical (FTA Survey, page 22):** See §6.1 Class C for the full interleaving example. The metric impact is 5 tables (of 14) producing garbled paragraph LDUs instead of structured FactRows, driving Recall to 64%.
+
+---
+
+## 6.1 Failure Mode Analysis — Per Document Class
+
+All four document classes exhibit distinct failure signatures driven by different structural properties. Understanding these patterns drove several design decisions in the escalation chain and chunking rules.
+
+### Class A — Native Digital Annual Reports
+
+**Representative file:** `CBE ANNUAL REPORT 2023-24.pdf` (doc_id: `3f8a2c1d9e4b7051`)
+
+**Observed failure pattern:**
+Class A documents are the pipeline's best case — Strategy A succeeds, confidence is high, and text extraction is clean. However, two specific sub-patterns degrade extraction quality without triggering escalation:
+
+**Sub-pattern 1 — Nested table headers flattened.** CBE's Consolidated Balance Sheet (page 48) uses a three-level nested header:
+```
+Assets
+  ├── Current Assets
+  │     ├── Cash and balances with NBE    | FY2023/24 | FY2022/23
+  │     └── Due from banks and FIs        | FY2023/24 | FY2022/23
+  └── Non-Current Assets
+        └── Loans and advances            | FY2023/24 | FY2022/23
+```
+pdfplumber's `extract_tables()` collapses the merged-cell hierarchy to a single header row: `["Assets", "FY2023/24", "FY2022/23"]`. The sub-category context ("Current Assets", "Non-Current Assets") is lost from the header array; it appears as a data row instead. `FactRow` records therefore carry the wrong column semantics for these parent rows, and a `query_facts` query for "current assets" returns the parent row but not its children under the correct header.
+
+**Sub-pattern 2 — Embedded charts produce phantom whitespace.** Annual reports in Class A contain bar charts and pie charts (e.g., loan portfolio distribution, p. 62). pdfplumber extracts the chart area as whitespace — `char_count = 0`, `image_area_ratio = 0.45` — which does not trigger scanned-page detection (threshold: 0.80) but also produces no usable content. The chart is silently absent from the LDU list; the figure caption (if any) is extracted as a standalone paragraph, violating Rule R2. This is the source of the 1 missed table in the metrics above.
+
+**Pipeline response:** No escalation is triggered because document-level confidence (0.87) comfortably clears the 0.75 gate. The failures are silent at the routing level. Only ChunkValidator's R2 warning surfaces the misclassified captions.
+
+---
+
+### Class B — Scanned Audit Reports
+
+**Representative file:** `Audit Report - 2023.pdf` (doc_id: `9e6c3b1f7a2d4085`)
+
+**Observed failure pattern:**
+This document was triage-classified as `MIXED` origin (origin_confidence: 0.63). The first 6 pages are native digital cover pages, but pages 7–38 are rasterized scans of typewritten audit findings. Strategy A (FastText/pdfplumber) extracts the cover and executive summary correctly but returns blank blocks for the audit finding pages — `char_count = 0` for those pages even though the visual image clearly contains dense paragraph text.
+
+**Signals that triggered escalation:**
+- Pages 7–38: `char_density = 0.0` (no embedded text characters)
+- `image_area_ratio = 0.94` on those pages (full-page scanned image)
+- `scanned_page_ratio = 0.80` overall → crosses `scanned_page_ratio_hard: 0.80` threshold
+
+**Pipeline response:**
+Strategy A confidence scored 0.41 (below `confidence_threshold_ab: 0.75`) → escalated to Strategy B (Docling). Docling's layout model attempted column detection on the scanned pages but returned empty text blocks since it also relies on embedded text, not OCR. Strategy B confidence: 0.38 → escalated to Strategy C (Vision/Gemini). Vision extraction successfully recovered the typewritten text. The document was flagged `requires_human_review = True` because even Vision confidence (0.52) fell short of the `human_review_threshold: 0.50`... narrowly cleared but the rating remained fragile.
+
+**Root cause:** Ethiopia's auditing agencies historically produce typewritten reports scanned to PDF. The pipeline has no OCR tier between Docling and VLM — a gap acknowledged in Section 11.
+
+---
+
+### Class C — Mixed Technical Reports
+
+**Representative file:** `fta_performance_survey_final_report_2022.pdf` (doc_id: `4d8b2e5f9a1c7036`)
+
+**Observed failure pattern:**
+Class C documents are native digital but use complex multi-column layouts typical of academic and government survey publications. The FTA Performance Survey is a two-column, 72-page report with survey result tables embedded in the right column alongside running body text in the left column. pdfplumber reads the page as a single text stream left-to-right, causing column interleaving: left-column paragraph text is concatenated with right-column table cell values mid-sentence.
+
+**Concrete example — page 22 (survey results table):**
+```
+SOURCE (PDF visual — 2 columns):
+LEFT COLUMN:                          │ RIGHT COLUMN (table):
+The survey collected responses from   │ ┌──────────────────┬──────┐
+742 taxpayers across 6 regions.       │ │ Region           │  %   │
+Response rates varied significantly   │ ├──────────────────┼──────┤
+by region, with Addis Ababa showing   │ │ Addis Ababa      │ 38%  │
+the highest participation at 38%.     │ │ Oromia           │ 21%  │
+                                      │ │ Amhara           │ 17%  │
+                                      │ └──────────────────┴──────┘
+
+EXTRACTED (pdfplumber — Strategy A, no column split):
+"The survey collected responses from Region % Addis Ababa 38% 742 taxpayers
+across 6 regions. Oromia 21% Response rates varied significantly Amhara 17%
+by region, with Addis Ababa showing the highest..."
+```
+
+The table values are interleaved into the paragraph text. pdfplumber's `extract_tables()` returns `None` for this page (the table has no visible borders) and `extract_text()` reads across columns. The resulting `LDU.chunk_type` is `paragraph`, not `table`, so Rule R1 header preservation is never applied and `query_facts` returns 0 rows for these 5 pages.
+
+**Signals of degraded quality:**
+- Triage detects `layout_complexity = MULTI_COLUMN` (column gap > 50 pt threshold)
+- Despite this signal, the ExtractionRouter does not automatically escalate to Docling for MULTI_COLUMN documents — the origin_type is `NATIVE_DIGITAL` and confidence (0.79) clears the A gate
+- 5 of 14 table pages produce garbled paragraph LDUs
+- Overall table metrics for Class C: 71% precision / 64% recall
+
+**Root cause:** The ExtractionRouter uses origin_type confidence as its escalation signal. `NATIVE_DIGITAL` with high char_density scores well regardless of layout complexity. Multi-column layout is detected by the TriageAgent and stored in `DocumentProfile.layout_complexity`, but the ExtractionRouter does not factor `layout_complexity` into its escalation decision. Docling's layout model handles multi-column text correctly via its line-grouping algorithm — but it is never called.
+
+**Mitigation considered:** Add a secondary escalation rule: if `layout_complexity == MULTI_COLUMN` and `tables_detected > 0`, force escalation to Strategy B regardless of Strategy A confidence. This would add one conditional in `src/agents/extractor.py` and would fix the 5 interleaved table pages in this document at zero additional API cost.
+
+---
+
+### Class D — Table-Heavy Statistical Reports
+
+**Representative file:** `tax_expenditure_ethiopia_2021_22.pdf` (doc_id: `7e4c9a2f1b8d5072`)
+
+**Observed failure pattern:**
+This MoF (Ministry of Finance) publication is native digital but 68% of its pages are dense multi-column tables. Strategy A extraction succeeded (char_density: 0.38, well above threshold) and confidence was 0.82, so no escalation occurred. However, at the chunking stage, the 5-rule ChunkingEngine exposed a structural problem: pdfplumber's `extract_tables()` call on this document returned `None` for 14 of the 22 table pages because the tables use manual character-spacing rather than PDF table primitives. The fallback `extract_text()` returned the table rows as unstructured lines.
+
+**Signals of degraded quality:**
+- `LDU.chunk_type = paragraph` for content that is visually tabular
+- `table_headers = []` on those chunks (R1 header preservation had nothing to inherit)
+- `query_facts` SQL queries returned 0 rows for these pages; only `search_chunks` could find the data
+
+**Pipeline response:**
+The ExtractionRouter correctly logged `strategy = "fast_text"` and `confidence = 0.82` in the ledger — the routing was correct per the triage signal. The quality loss was silent: the data was retrieved, but as unstructured text rather than structured `FactRow` entries. The document is the most prominent example of the "invisible table problem" — triage passes, extraction passes, but structured retrieval is degraded.
+
+**Root cause:** pdfplumber's table detector requires cell border lines or consistent column spacing cues. Manually kerned text tables (common in Ethiopian government statistical publications) lack those cues. Docling's table detection, which uses a layout model rather than geometric rules, would have recovered these tables — but Strategy B was never triggered because Strategy A confidence was above threshold.
+
+**Mitigation considered:** Lower the `confidence_threshold_ab` from 0.75 to 0.60 for documents classified as `TABLE_HEAVY` in the triage layout complexity field, so Docling always verifies table-dense documents. This is a one-line config change; not yet applied to keep the escalation chain predictable across all 12 corpus documents.
 
 ---
 
@@ -547,7 +821,158 @@ docker compose run refinery python -m src.agents.audit "Revenue grew 18%"
 
 ---
 
-## 10. What Would We Change with More Time
+## 10. Development Failures — Root Causes and Fixes
+
+Two significant technical failures were encountered and resolved during development. Both are documented here with before/after evidence.
+
+### Failure 1 — Token Overflow at Chunk Boundary (ChunkingEngine)
+
+**When discovered:** Week 3, during implementation of `tests/test_chunker.py` test `test_token_limit_respected`.
+
+**Symptom:**
+```python
+# Test failure:
+AssertionError: chunk token count 531 > max_tokens_per_chunk 512
+# Offending chunk was a paragraph from CBE Annual Report, section "Risk Management"
+```
+
+**Root cause:**
+The initial implementation estimated split points by summing sentence-level token counts:
+```python
+# BEFORE (broken):
+def _split_text(text: str, max_tokens: int) -> list[str]:
+    sentences = text.split('. ')
+    chunks, current, count = [], [], 0
+    for s in sentences:
+        s_tokens = len(s.split())     # BUG: word count ≠ token count
+        if count + s_tokens > max_tokens:
+            chunks.append('. '.join(current))
+            current, count = [s], s_tokens
+        else:
+            current.append(s)
+            count += s_tokens
+    if current:
+        chunks.append('. '.join(current))
+    return chunks
+```
+
+Word count is a poor proxy for BPE token count. Hyphenated financial terms like `"government-guaranteed"`, `"interest-bearing"`, and currency suffixes like `"ETB"` tokenise to 2–3 tokens per word. A 512-word paragraph could tokenise to 650+ tokens.
+
+**Fix applied:**
+Replaced word-count estimation with `tiktoken` measurement of the *joined* candidate chunk before committing:
+
+```python
+# AFTER (fixed):
+import tiktoken
+_enc = tiktoken.get_encoding("cl100k_base")
+
+def _split_text(text: str, max_tokens: int) -> list[str]:
+    sentences = text.split('. ')
+    chunks, current = [], []
+    for s in sentences:
+        candidate = '. '.join(current + [s])
+        if len(_enc.encode(candidate)) > max_tokens:
+            if current:
+                chunks.append('. '.join(current))
+            current = [s]
+        else:
+            current.append(s)
+    if current:
+        chunks.append('. '.join(current))
+    return chunks
+```
+
+**Before/after evidence:**
+
+```
+BEFORE fix — chunk from "Risk Management" section:
+  word_count_estimate: 498 words → predicted 498 tokens
+  actual tiktoken count: 531 tokens  ← over limit by 19 tokens
+  ChunkValidator: RAISES ChunkingRuleViolation
+
+AFTER fix — same source paragraph:
+  Paragraph split into 2 chunks at sentence boundary after "...credit exposure."
+  Chunk 1: 487 tokens  ✓ (within 512)
+  Chunk 2: 201 tokens  ✓ (above min 50)
+  ChunkValidator: PASS
+  test_token_limit_respected: PASS (30/30 tests)
+```
+
+---
+
+### Failure 2 — Silent Strategy B Bypass on TABLE_HEAVY Documents
+
+**When discovered:** Week 3, during manual spot-check of `FactTable` output for `tax_expenditure_ethiopia_2021_22.pdf`.
+
+**Symptom:**
+```sql
+SELECT COUNT(*) FROM facts WHERE doc_id = '7e4c9a2f1b8d5072';
+-- Result: 23 rows
+-- Expected: ~220 rows (22 table pages × ~10 rows each)
+```
+
+Only 23 FactRow records were written for a 48-page document with 22 table pages.
+
+**Root cause — two bugs compounded:**
+
+**Bug A (ExtractionRouter):** The confidence threshold gate compared Strategy A's `confidence` (0.82) against `confidence_threshold_ab` (0.75). Since 0.82 > 0.75, no escalation occurred. This was correct by design — but the assumption was that Strategy A's confidence being high meant extraction quality was high. It does not: confidence measures the *origin type signal* (embedded text density), not whether the extracted tables are structurally valid.
+
+**Bug B (FastTextExtractor):** `_extract_tables()` called `page.extract_tables()` and appended results only if the return value was truthy:
+```python
+# BEFORE (broken):
+for page in pdf.pages:
+    tables = page.extract_tables()
+    if tables:                        # BUG: None and [] both falsy
+        doc.tables.extend(tables)
+```
+
+When `pdfplumber` returns `None` (not `[]`) for a page with no detectable table borders, the condition correctly skips it. But for the Tax Expenditure document, `extract_tables()` returned `None` for 14 of 22 table pages because the tables had no border lines — so those pages produced zero FactRow records.
+
+**Fix applied (partial):**
+
+The `if tables:` guard was replaced with an explicit `None` check, and a fallback was added to log pages where table extraction returned `None` for downstream diagnosis:
+
+```python
+# AFTER (improved):
+for page in pdf.pages:
+    tables = page.extract_tables()
+    if tables is None:
+        doc.extraction_warnings.append(
+            f"page {page.page_number}: extract_tables() returned None "
+            f"(possible manually-kerned table — consider Docling escalation)"
+        )
+    elif tables:
+        doc.tables.extend(tables)
+```
+
+The ledger now surfaces `extraction_warnings` per document so operators can identify which pages need manual review or strategy escalation.
+
+**Why not fully fixed:** Automatically re-routing to Strategy B when `extract_tables()` returns `None` would require re-running the full confidence gate on a page-by-page basis rather than a document-level signal. This is a worthwhile architecture change (see Section 11) but was not implemented in the current release to avoid destabilising the existing 30-test chunker suite.
+
+**Before/after evidence:**
+
+```
+BEFORE fix:
+  FactTable rows for doc 7e4c9a2f1b8d5072: 23
+  extraction_warnings: []  (silent failure — no trace of the missed tables)
+  Ledger entry: {"strategy": "fast_text", "confidence": 0.82, "escalated": false}
+
+AFTER fix:
+  FactTable rows for doc 7e4c9a2f1b8d5072: 23  (count unchanged — same data)
+  extraction_warnings: [
+    "page 12: extract_tables() returned None (possible manually-kerned table...)",
+    "page 13: extract_tables() returned None ...",
+    ... (14 entries total)
+  ]
+  Ledger entry: {"strategy": "fast_text", "confidence": 0.82, "escalated": false,
+                 "extraction_warnings": 14}
+  Operator now knows: 14 pages in this document need Docling or manual review.
+```
+
+---
+
+## 11. What Would We Change with More Time
+
 
 | Area                          | Current State                                  | Improvement                                                                                                           |
 | ----------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
