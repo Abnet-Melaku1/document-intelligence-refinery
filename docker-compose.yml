@@ -1,0 +1,61 @@
+version: "3.9"
+
+# Document Intelligence Refinery — local development stack
+#
+# Services:
+#   refinery   — Main pipeline container (triage → extract → chunk → index → query)
+#   chroma     — ChromaDB vector store (HTTP server mode for multi-container access)
+#
+# Usage:
+#   docker compose up -d chroma          # start ChromaDB only
+#   docker compose run refinery triage   # run triage stage
+#   docker compose run refinery query    # run query agent
+#   docker compose logs -f refinery      # tail logs
+
+services:
+  refinery:
+    build: .
+    image: document-intelligence-refinery:latest
+    container_name: refinery
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      # Point ChromaDB client at the chroma service when using HTTP mode
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    volumes:
+      # Source documents (read-only)
+      - ./data:/app/data:ro
+      # Persistent pipeline outputs
+      - ./.refinery:/app/.refinery
+      # Extraction rubric (editable without rebuild)
+      - ./rubric:/app/rubric
+    depends_on:
+      chroma:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    command: ["python3", "-c", "print('Refinery ready. Use docker compose run refinery <command>')"]
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  chroma_data:
+    driver: local
