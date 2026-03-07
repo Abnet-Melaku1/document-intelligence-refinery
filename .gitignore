@@ -28,7 +28,6 @@ data.zip
 .refinery/cache/
 
 # IDE
-.vscode/
 .idea/
 *.swp
 
@@ -45,3 +44,7 @@ htmlcov/
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json
